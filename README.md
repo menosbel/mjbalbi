@@ -69,6 +69,7 @@ año: 2024
 enmarcada: true           # opcional
 estado: disponible        # disponible | reservada | vendida
 destacada: false          # opcional, por defecto false
+serie: marinas            # opcional: el slug de una Serie
 ---
 
 La descripción de la Obra va acá, en Markdown.
@@ -78,6 +79,23 @@ Si falta un campo obligatorio, una foto no tiene `alt`, la **Técnica** o el
 **Estado** no existen o dos **Obras** tienen el mismo slug, el build falla y el
 mensaje dice qué corregir. El precio no se carga: el sitio siempre dice
 "Consultar precio".
+
+## Cargar una Serie
+
+Cada **Serie** es un archivo `contenido/series/<slug>.md` (o una carpeta con un
+`index.md`), con el mismo criterio de slugs que las **Obras**. Su página es
+`/series/<slug>/` y muestra el nombre, el texto y sus **Obras** en el orden de la galería.
+
+```markdown
+---
+nombre: Marinas
+---
+
+El texto de la artista sobre la Serie, en Markdown.
+```
+
+Una **Obra** se suma a la **Serie** con `serie: <slug>`. Si la **Serie** no existe,
+el build falla.
 
 ## Publicar
 

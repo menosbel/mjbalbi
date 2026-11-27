@@ -11,3 +11,6 @@ export function url(path: string) {
 
 /** Path of an Obra's page. */
 export const urlObra = (slug: string) => url(`/obras/${slug}/`);
+
+/** Path of a Serie's page. */
+export const urlSerie = (slug: string) => url(`/series/${slug}/`);
