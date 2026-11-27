@@ -1,0 +1,18 @@
+---
+// GoatCounter: analítica sin cookies. Solo se incluye si hay un código en
+// siteConfig.goatcounter (o en la variable de entorno GOATCOUNTER).
+import { siteConfig } from '../../site.config.mjs';
+
+const codigo = siteConfig.goatcounter;
+---
+
+{
+  codigo && (
+    <script
+      is:inline
+      data-goatcounter={`https://${codigo}.goatcounter.com/count`}
+      async
+      src="https://gc.zgo.at/count.js"
+    />
+  )
+}
