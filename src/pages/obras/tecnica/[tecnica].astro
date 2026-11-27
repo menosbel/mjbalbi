@@ -1,0 +1,28 @@
+---
+// Vista filtrada de la galería: solo las Obras de una Técnica.
+import { getCollection } from 'astro:content';
+import Galeria from '../../../components/Galeria.astro';
+import Base from '../../../layouts/Base.astro';
+import { filtrosGaleria, slugTecnica } from '../../../lib/filtros';
+import { TECNICAS } from '../../../lib/obras';
+import { ordenGaleria } from '../../../lib/orden';
+
+export async function getStaticPaths() {
+  const obras = await getCollection('obras');
+  return TECNICAS.filter((t) => obras.some((o) => o.data.tecnica === t)).map((tecnica) => ({
+    params: { tecnica: slugTecnica(tecnica) },
+    props: { tecnica },
+  }));
+}
+
+const { tecnica } = Astro.props;
+const todas = ordenGaleria(await getCollection('obras'));
+const filtros = await filtrosGaleria(todas);
+const obras = todas.filter((o) => o.data.tecnica === tecnica);
+const titulo = `Obras en ${tecnica}`;
+---
+
+<Base title={titulo} description={`Obras de María Julia Balbi pintadas en ${tecnica}.`}>
+  <h1>{titulo}</h1>
+  <Galeria obras={obras} filtros={filtros} />
+</Base>

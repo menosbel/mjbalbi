@@ -1,0 +1,29 @@
+---
+// Vista filtrada de la galería: solo las Obras de una Serie. (La página de la
+// Serie, con su texto, es /series/<slug>/.)
+import { getCollection } from 'astro:content';
+import Galeria from '../../../components/Galeria.astro';
+import Base from '../../../layouts/Base.astro';
+import { filtrosGaleria } from '../../../lib/filtros';
+import { ordenGaleria } from '../../../lib/orden';
+import { urlSerie } from '../../../lib/urls';
+
+export async function getStaticPaths() {
+  const obras = await getCollection('obras');
+  return (await getCollection('series'))
+    .filter((s) => obras.some((o) => o.data.serie?.id === s.id))
+    .map((serie) => ({ params: { serie: serie.id }, props: { serie } }));
+}
+
+const { serie } = Astro.props;
+const todas = ordenGaleria(await getCollection('obras'));
+const filtros = await filtrosGaleria(todas);
+const obras = todas.filter((o) => o.data.serie?.id === serie.id);
+const titulo = `Obras de la Serie ${serie.data.nombre}`;
+---
+
+<Base title={titulo} description={`Las obras de María Julia Balbi en la Serie ${serie.data.nombre}.`}>
+  <h1>{titulo}</h1>
+  <p class="sobre-serie"><a href={urlSerie(serie.id)}>Sobre la Serie {serie.data.nombre}</a></p>
+  <Galeria obras={obras} filtros={filtros} />
+</Base>

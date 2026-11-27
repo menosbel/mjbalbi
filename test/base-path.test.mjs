@@ -24,8 +24,16 @@ for (const base of ['/mjbalbi', '']) {
       assert.ok(site.ok, site.output);
     });
 
-    test('genera el inicio, la galería, una página por Obra y Sobre mí', () => {
-      assert.deepEqual(site.pages(), ['/', '/obras/', '/obras/atardecer-en-el-rio/', '/obras/sin-titulo-01/', '/sobre-mi/']);
+    test('genera el inicio, la galería con sus vistas filtradas, una página por Obra y Sobre mí', () => {
+      assert.deepEqual(site.pages(), [
+        '/',
+        '/obras/',
+        '/obras/atardecer-en-el-rio/',
+        '/obras/sin-titulo-01/',
+        '/obras/tecnica/oleo/',
+        '/obras/tecnica/pastel/',
+        '/sobre-mi/',
+      ]);
     });
 
     test('el inicio enlaza a cada Obra', () => {

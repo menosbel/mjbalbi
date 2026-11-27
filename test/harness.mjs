@@ -110,3 +110,26 @@ export class Site {
     return existsSync(file) ? file : null;
   }
 }
+
+/**
+ * CSS rules that apply to the page (inline <style> plus linked stylesheets),
+ * as { selector, cuerpo, media } with media = the @media condition or null.
+ */
+export function reglasCss(site, page) {
+  const linked = page
+    .querySelectorAll('link[rel="stylesheet"]')
+    .map((l) => readFileSync(site.resolveUrl(l.getAttribute('href')), 'utf8'));
+  const css = [...page.querySelectorAll('style').map((s) => s.text), ...linked].join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
+  const reglas = [];
+  const re = /@media([^{]*)\{((?:[^{}]*\{[^{}]*\})*)\s*\}|([^{}@]+)\{([^{}]*)\}/g;
+  for (const m of css.matchAll(re)) {
+    if (m[1] !== undefined) {
+      for (const [, selector, cuerpo] of m[2].matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        reglas.push({ selector: selector.trim(), cuerpo, media: m[1].trim() });
+      }
+    } else {
+      reglas.push({ selector: m[3].trim(), cuerpo: m[4], media: null });
+    }
+  }
+  return reglas;
+}
