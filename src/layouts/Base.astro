@@ -1,6 +1,7 @@
 ---
 import { siteConfig } from '../../site.config.mjs';
-import Seo, { type ImagenSeo } from '../components/Seo.astro';
+import Analitica from '../components/Analitica.astro';
+import Seo,{ type ImagenSeo } from '../components/Seo.astro';
 import { url } from '../lib/urls';
 import '../styles/global.css';
 
@@ -30,6 +31,7 @@ const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artis
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
     <Seo title={fullTitle} description={description} image={image} type={type} jsonLd={jsonLd} />
+    <Analitica />
   </head>
   <body>
     <header class="contenedor encabezado">

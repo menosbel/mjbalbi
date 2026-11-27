@@ -97,3 +97,11 @@ describe('SEO de todas las páginas', () => {
     assert.equal(jsonLd(site.page('/')).filter((d) => d['@type'] === 'VisualArtwork').length, 0);
   });
 });
+
+test('sin base path, las URLs absolutas cuelgan de la raíz del dominio', async () => {
+  const site = await buildSite('obras-validas', { base: '', env: { SITE_URL } });
+  assert.ok(site.ok, site.output);
+  const page = site.page('/obras/atardecer-en-el-rio/');
+  assert.equal(page.querySelector('link[rel="canonical"]').getAttribute('href'), `${SITE_URL}/obras/atardecer-en-el-rio/`);
+  assert.ok(meta(page, 'meta[property="og:image"]').startsWith(`${SITE_URL}/_astro/`));
+});
