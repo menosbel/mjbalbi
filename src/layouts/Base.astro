@@ -1,15 +1,27 @@
 ---
 import { siteConfig } from '../../site.config.mjs';
+import Analitica from '../components/Analitica.astro';
+import Seo, { type ImagenSeo } from '../components/Seo.astro';
 import { mailto } from '../lib/consulta';
 import { url } from '../lib/urls';
 import '../styles/global.css';
 
+// Cada página pasa sus metadatos como props; todos tienen un valor por defecto,
+// pero title y description deben ser únicos por página (lo verifica test/seo.test.mjs).
 interface Props {
-  /** Título de la página; el nombre de la artista se agrega al final. */
+  /** Título de la página; el nombre de la artista se agrega al final. Sin título: solo el nombre. */
   title?: string;
+  /** Meta description. Por defecto, la descripción del sitio (siteConfig.descripcion). */
+  description?: string;
+  /** Imagen para compartir en redes ({ src: ImageMetadata, alt }). */
+  image?: ImagenSeo;
+  /** og:type; 'website' por defecto. */
+  type?: string;
+  /** Datos estructurados schema.org (JSON-LD): un objeto o una lista. */
+  jsonLd?: object | object[];
 }
 
-const { title } = Astro.props;
+const { title, description = siteConfig.descripcion, image, type, jsonLd } = Astro.props;
 const instagram = `https://www.instagram.com/${siteConfig.instagram}/`;
 const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artista;
 const secciones = [
@@ -24,7 +36,8 @@ const secciones = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
-    <title>{fullTitle}</title>
+    <Seo title={fullTitle} description={description} image={image} type={type} jsonLd={jsonLd} />
+    <Analitica />
   </head>
   <body>
     <header class="contenedor encabezado">

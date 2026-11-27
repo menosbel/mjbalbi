@@ -1,6 +1,7 @@
 ---
 // Sobre mí: biografía, Statement y Trayectoria, cargados en contenido/sobre-mi/.
 import { getEntry, render } from 'astro:content';
+import { siteConfig } from '../../site.config.mjs';
 import Base from '../layouts/Base.astro';
 import PersonaJsonLd from '../components/PersonaJsonLd.astro';
 
@@ -22,7 +23,10 @@ const apartados = trayectoria
   : [];
 ---
 
-<Base title="Sobre mí">
+<Base
+  title="Sobre mí"
+  description={`Biografía, statement y trayectoria de ${siteConfig.artista}: formación, exposiciones y premios.`}
+>
   <PersonaJsonLd />
   <h1>Sobre mí</h1>
   {Biografia && <Biografia />}

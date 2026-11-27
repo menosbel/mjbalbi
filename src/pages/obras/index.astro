@@ -2,12 +2,17 @@
 import { getCollection } from 'astro:content';
 import TarjetaObra from '../../components/TarjetaObra.astro';
 import Base from '../../layouts/Base.astro';
+import { siteConfig } from '../../../site.config.mjs';
 import { ordenGaleria } from '../../lib/orden';
 
 const obras = ordenGaleria(await getCollection('obras'));
 ---
 
-<Base title="Obras">
+<Base
+  title="Obras"
+  description={`Galería de obras de ${siteConfig.artista}, con su técnica, medidas y disponibilidad.`}
+  image={obras[0]?.data.fotos[0]}
+>
   <h1>Obras</h1>
   <ul class="galeria">
     {

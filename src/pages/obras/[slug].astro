@@ -4,6 +4,7 @@ import FotosObra from '../../components/FotosObra.astro';
 import Base from '../../layouts/Base.astro';
 import { consultaObra } from '../../lib/consulta';
 import { ETIQUETA_ESTADO, ETIQUETA_TECNICA, formatMedidas } from '../../lib/obras';
+import { seoObra } from '../../lib/seo';
 import { urlSerie } from '../../lib/urls';
 
 export async function getStaticPaths() {
@@ -34,7 +35,7 @@ function capitalize(text: string) {
 }
 ---
 
-<Base title={titulo}>
+<Base title={titulo} {...await seoObra(obra.id, obra.data, obra.body)}>
   <article class="obra">
     <FotosObra fotos={fotos} />
     <div class="ficha">
