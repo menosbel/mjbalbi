@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import FotosObra from '../../components/FotosObra.astro';
 import Base from '../../layouts/Base.astro';
 import { ETIQUETA_ESTADO, ETIQUETA_TECNICA, formatMedidas } from '../../lib/obras';
 
@@ -9,7 +10,7 @@ export async function getStaticPaths() {
 }
 
 const { obra } = Astro.props;
-const { titulo, medidas, tecnica, soporte, año, enmarcada, estado } = obra.data;
+const { titulo, fotos, medidas, tecnica, soporte, año, enmarcada, estado } = obra.data;
 const { Content } = await render(obra);
 
 const datos: [string, string][] = [
@@ -27,6 +28,7 @@ function capitalize(text: string) {
 
 <Base title={titulo}>
   <article class="obra">
+    <FotosObra fotos={fotos} />
     <h1>{titulo}</h1>
     <p class={`estado estado-${estado}`}>{ETIQUETA_ESTADO[estado]}</p>
     <dl>

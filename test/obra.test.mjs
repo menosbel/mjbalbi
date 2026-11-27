@@ -13,6 +13,14 @@ function datos(page) {
   return result;
 }
 
+/** URLs of an <img>'s srcset. */
+function srcset(img) {
+  return (img.getAttribute('srcset') ?? '')
+    .split(',')
+    .map((c) => c.trim().split(/\s+/)[0])
+    .filter(Boolean);
+}
+
 describe('página de una Obra', () => {
   let site;
   before(async () => {
@@ -46,6 +54,38 @@ describe('página de una Obra', () => {
 
     test('muestra la etiqueta de su Estado', () => {
       assert.equal(page.querySelector('main .estado')?.text.trim(), 'Disponible');
+    });
+
+    test('muestra todas las fotos, la principal primero, con su texto alternativo', () => {
+      const alts = page.querySelectorAll('main figure img').map((img) => img.getAttribute('alt'));
+      assert.deepEqual(alts, [
+        'Un río ancho bajo un cielo naranja, con la orilla en sombra',
+        'Detalle de las pinceladas del agua',
+      ]);
+    });
+
+    test('sirve cada foto en varios tamaños', () => {
+      const imgs = page.querySelectorAll('main figure img');
+      assert.equal(imgs.length, 2);
+      for (const img of imgs) {
+        const candidatos = srcset(img);
+        assert.ok(candidatos.length >= 2, `srcset con un solo tamaño: ${img.getAttribute('srcset')}`);
+        assert.ok(img.getAttribute('sizes'), 'falta el atributo sizes');
+        for (const url of [img.getAttribute('src'), ...candidatos]) {
+          assert.ok(site.resolveUrl(url), `la imagen ${url} no existe en el build`);
+        }
+      }
+      for (const source of page.querySelectorAll('main figure source')) {
+        for (const url of srcset(source)) {
+          assert.ok(site.resolveUrl(url), `la imagen ${url} no existe en el build`);
+        }
+      }
+    });
+
+    test('carga la foto principal enseguida y difiere las demás', () => {
+      const [principal, ...resto] = page.querySelectorAll('main figure img');
+      assert.notEqual(principal.getAttribute('loading'), 'lazy');
+      for (const img of resto) assert.equal(img.getAttribute('loading'), 'lazy');
     });
 
     test('dice "Consultar precio" y no muestra ningún precio', () => {
