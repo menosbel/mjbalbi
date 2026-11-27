@@ -4,10 +4,10 @@ import type { Loader } from 'astro/loaders';
 const FORMATO_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /**
- * Glob loader for a collection whose entries are `<slug>.md` or
- * `<slug>/index.md`. The slug is the file or folder name, as is (see the slug
- * convention in #4). The build fails if a name doesn't follow the convention
- * or if two entries end up with the same slug.
+ * Loader glob para una colección cuyas entradas son `<slug>.md` o
+ * `<slug>/index.md`. El slug es el nombre del archivo o de la carpeta, tal cual
+ * (ver la convención de slugs en #4). El build falla si un nombre no sigue la
+ * convención o si dos entradas terminan con el mismo slug.
  */
 export function globPorSlug({ base, coleccion }: { base: string; coleccion: string }): Loader {
   let vistos = new Map<string, string>();

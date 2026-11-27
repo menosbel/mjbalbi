@@ -15,8 +15,9 @@ interface ObraOrdenable {
 const grupo = (estado: Estado) => (estado === 'vendida' ? 1 : 0);
 
 /**
- * A sorted copy of the Obras, in gallery order. Works on any subset (a Serie,
- * the Destacadas). Last resort tie-break: the slug, so the order is stable.
+ * Una copia de las Obras en el orden de la galería. Sirve para cualquier
+ * subconjunto (una Serie, las Destacadas). Último desempate: el slug, para que
+ * el orden sea estable.
  */
 export function ordenGaleria<T extends ObraOrdenable>(obras: readonly T[]): T[] {
   return [...obras].sort(
@@ -31,9 +32,10 @@ export function ordenGaleria<T extends ObraOrdenable>(obras: readonly T[]): T[] 
 const cargas = new Map<string, number>();
 
 /**
- * When the Obra was loaded: the time of the git commit that added its Markdown
- * file (content lives in git, see ADR 0001). A file not committed yet is the
- * newest (Infinity). Needs the full history: CI checks out with fetch-depth 0.
+ * Cuándo se cargó la Obra: la fecha del commit de git que agregó su archivo
+ * Markdown (el contenido vive en git, ver ADR 0001). Un archivo todavía sin
+ * commitear es el más nuevo (Infinity). Necesita la historia completa: en CI
+ * el checkout se hace con fetch-depth 0.
  */
 function momentoDeCarga({ filePath }: ObraOrdenable): number {
   if (!filePath) return Infinity;
@@ -51,7 +53,7 @@ function leerDeGit(archivo: string): number {
     }).trim();
     return salida ? Number(salida) : Infinity;
   } catch {
-    // Not a git repo or no git: every Obra ties and the slug decides.
+    // No es un repo de git o no hay git: todas las Obras empatan y decide el slug.
     return Infinity;
   }
 }
