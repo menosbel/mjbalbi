@@ -102,6 +102,31 @@ El texto de la artista sobre la Serie, en Markdown.
 Una **Obra** se suma a la **Serie** con `serie: <slug>`. Si la **Serie** no existe,
 el build falla.
 
+## Sobre mí
+
+La página `/sobre-mi/` se arma con tres archivos de `contenido/sobre-mi/`:
+
+- `biografia.md`: la biografía, en Markdown.
+- `statement.md`: el **Statement**, en Markdown.
+- `trayectoria.md`: la **Trayectoria**, en el frontmatter, separada en formación,
+  exposiciones y premios (cada lista es opcional):
+
+```md
+---
+formacion:
+  - año: 2008–2012
+    texto: Profesorado de Artes Visuales, Escuela de Bellas Artes
+exposiciones:
+  - año: 2019
+    texto: Muestra individual "Orillas", Galería del Puerto
+premios:
+  - año: 2021
+    texto: Primer premio, Salón de Pintura de Rosario
+---
+```
+
+Dentro de esos textos no se usan títulos de nivel 1 (`#`): la página ya tiene el suyo.
+
 ## Publicar
 
 Cada push a `main` corre `.github/workflows/pages.yml`: instala dependencias, corre
