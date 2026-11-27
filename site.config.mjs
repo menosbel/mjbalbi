@@ -19,6 +19,11 @@ export const siteConfig = {
   contentDir: env.CONTENT_DIR ?? './contenido',
   /** Nombre de la artista, para títulos y metadatos. */
   artista: 'María Julia Balbi',
+  /** Email de la artista: destino de las Consultas y del pie. */
+  // TODO: reemplazar por el email real de la artista (todavía no lo tenemos).
+  email: 'contacto@example.com',
+  /** Usuario de Instagram, sin @. */
+  instagram: 'mjbalbi.arte',
 };
 
 function stripTrailingSlash(value) {

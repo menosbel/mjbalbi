@@ -32,6 +32,11 @@ Todo lo que depende de dónde se publica está en `site.config.mjs`: URL del sit
 contenido. Algunos valores se pueden pisar con variables de entorno (`SITE_URL`,
 `SITE_BASE`, `CONTENT_DIR`).
 
+También están ahí el email de la artista (`email`) y su usuario de Instagram
+(`instagram`), que usan el botón de **Consulta** de cada **Obra** y el pie de todas
+las páginas. **Pendiente:** el email es un placeholder (`contacto@example.com`,
+marcado con un TODO) hasta tener el real; hay que reemplazarlo antes de publicar.
+
 ## Cargar una Obra
 
 Cada **Obra** es una carpeta dentro de `contenido/obras/` con un `index.md` y sus
