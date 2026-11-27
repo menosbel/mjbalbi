@@ -1,0 +1,25 @@
+---
+import { siteConfig } from '../../site.config.mjs';
+
+interface Props {
+  /** Título de la página; el nombre de la artista se agrega al final. */
+  title?: string;
+}
+
+const { title } = Astro.props;
+const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artista;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>

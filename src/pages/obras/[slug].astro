@@ -1,5 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { ETIQUETA_ESTADO, ETIQUETA_TECNICA, formatMedidas } from '../../lib/obras';
 
 export async function getStaticPaths() {
   const obras = await getCollection('obras');
@@ -7,6 +9,39 @@ export async function getStaticPaths() {
 }
 
 const { obra } = Astro.props;
+const { titulo, medidas, tecnica, soporte, año, enmarcada, estado } = obra.data;
+const { Content } = await render(obra);
+
+const datos: [string, string][] = [
+  ['Medidas', formatMedidas(medidas)],
+  ['Técnica', ETIQUETA_TECNICA[tecnica]],
+  ...(soporte ? [['Soporte', capitalize(soporte)] as [string, string]] : []),
+  ['Año', String(año)],
+  ...(enmarcada !== undefined ? [['Enmarcada', enmarcada ? 'Sí' : 'No'] as [string, string]] : []),
+];
+
+function capitalize(text: string) {
+  return text.charAt(0).toLocaleUpperCase('es') + text.slice(1);
+}
 ---
 
-<h1>{obra.data.titulo}</h1>
+<Base title={titulo}>
+  <article class="obra">
+    <h1>{titulo}</h1>
+    <p class={`estado estado-${estado}`}>{ETIQUETA_ESTADO[estado]}</p>
+    <dl>
+      {
+        datos.map(([termino, valor]) => (
+          <>
+            <dt>{termino}</dt>
+            <dd>{valor}</dd>
+          </>
+        ))
+      }
+    </dl>
+    <div class="descripcion">
+      <Content />
+    </div>
+    <p class="precio">Consultar precio</p>
+  </article>
+</Base>
