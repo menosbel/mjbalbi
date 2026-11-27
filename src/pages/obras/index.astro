@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import TarjetaObra from '../../components/TarjetaObra.astro';
+import Base from '../../layouts/Base.astro';
+import { ordenarObras } from '../../lib/orden';
+
+const obras = ordenarObras(await getCollection('obras'));
+---
+
+<Base title="Obras">
+  <h1>Obras</h1>
+  <ul class="galeria">
+    {
+      obras.map((obra, i) => (
+        <li>
+          <TarjetaObra obra={obra} eager={i < 2} />
+        </li>
+      ))
+    }
+  </ul>
+</Base>
+
+<style>
+  .galeria {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem 1.5rem;
+    margin: 0;
+    padding: 0 0 3rem;
+    list-style: none;
+  }
+
+  @media (min-width: 36rem) {
+    .galeria {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .galeria {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

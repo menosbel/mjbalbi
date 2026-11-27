@@ -19,6 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          # Full history: the gallery breaks year ties by when each Obra was added to git.
+          fetch-depth: 0
       - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc

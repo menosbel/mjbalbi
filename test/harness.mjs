@@ -3,7 +3,7 @@
 import { spawn } from 'node:child_process';
 import { existsSync, mkdtempSync, readdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve, sep } from 'node:path';
+import { basename, isAbsolute, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'node-html-parser';
 
@@ -15,7 +15,7 @@ const cache = new Map();
  * Builds the site with `test/fixtures/<fixture>` as content directory.
  * Builds are memoized per (fixture, base, env) within a test file.
  *
- * @param {string} fixture  name of a directory under test/fixtures
+ * @param {string} fixture  name of a directory under test/fixtures, or an absolute content dir
  * @param {{ base?: string, env?: Record<string, string> }} [options]
  *   base: the site's `base` path ('' or '/mjbalbi'); defaults to ''.
  *   env:  extra environment variables for the build.
@@ -28,9 +28,9 @@ export function buildSite(fixture, { base = '', env = {} } = {}) {
 }
 
 async function runBuild(fixture, base, env) {
-  const contentDir = join(root, 'test/fixtures', fixture);
+  const contentDir = isAbsolute(fixture) ? fixture : join(root, 'test/fixtures', fixture);
   if (!existsSync(contentDir)) throw new Error(`No existe el fixture ${contentDir}`);
-  const work = mkdtempSync(join(tmpdir(), `mjbalbi-${fixture}-`));
+  const work = mkdtempSync(join(tmpdir(), `mjbalbi-${basename(fixture)}-`));
   const outDir = join(work, 'dist');
   const { code, output } = await run(
     process.execPath,

@@ -24,8 +24,8 @@ for (const base of ['/mjbalbi', '']) {
       assert.ok(site.ok, site.output);
     });
 
-    test('genera el inicio y una página por Obra', () => {
-      assert.deepEqual(site.pages(), ['/', '/obras/atardecer-en-el-rio/', '/obras/sin-titulo-01/']);
+    test('genera el inicio, la galería y una página por Obra', () => {
+      assert.deepEqual(site.pages(), ['/', '/obras/', '/obras/atardecer-en-el-rio/', '/obras/sin-titulo-01/']);
     });
 
     test('el inicio enlaza a cada Obra', () => {
