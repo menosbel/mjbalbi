@@ -1,0 +1,23 @@
+---
+// Inicio provisorio: lista todas las Obras. Se reemplaza por la presentación
+// y las Destacadas en otro ticket de #4.
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { siteConfig } from '../../site.config.mjs';
+import { urlObra } from '../lib/urls';
+
+const obras = await getCollection('obras');
+---
+
+<Base>
+  <h1>{siteConfig.artista}</h1>
+  <ul>
+    {
+      obras.map((obra) => (
+        <li>
+          <a href={urlObra(obra.id)}>{obra.data.titulo}</a>
+        </li>
+      ))
+    }
+  </ul>
+</Base>

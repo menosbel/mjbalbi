@@ -1,5 +1,7 @@
 ---
 import { siteConfig } from '../../site.config.mjs';
+import { url } from '../lib/urls';
+import '../styles/global.css';
 
 interface Props {
   /** Título de la página; el nombre de la artista se agrega al final. */
@@ -15,11 +17,28 @@ const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artis
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
     <title>{fullTitle}</title>
   </head>
   <body>
-    <main>
+    <header class="contenedor encabezado">
+      <a href={url('/')}>{siteConfig.artista}</a>
+    </header>
+    <main class="contenedor">
       <slot />
     </main>
   </body>
 </html>
+
+<style>
+  .encabezado {
+    padding-block: 1.25rem;
+  }
+
+  .encabezado a {
+    font-family: var(--fuente-titulos);
+    font-size: 1.25rem;
+    color: var(--color-texto);
+    text-decoration: none;
+  }
+</style>

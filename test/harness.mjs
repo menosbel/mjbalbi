@@ -1,9 +1,9 @@
 // Test harness: builds the Astro site over a fixture content directory and
 // exposes the generated HTML. This is the only seam the tests use (see #4).
 import { spawn } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'node-html-parser';
 
@@ -78,6 +78,15 @@ export class Site {
   /** Whether the site path (without base) was generated. */
   exists(sitePath) {
     return existsSync(this.fileFor(sitePath));
+  }
+
+  /** Site paths (without base) of every generated HTML page, e.g. ['/', '/obras/foo/']. */
+  pages() {
+    if (!this.ok) throw new Error(`El build falló:\n${this.output}`);
+    return readdirSync(this.outDir, { recursive: true })
+      .filter((f) => f.endsWith('.html'))
+      .map((f) => `/${f.split(sep).join('/')}`.replace(/index\.html$/, ''))
+      .sort();
   }
 
   /** Parsed HTML (node-html-parser root) of a site path, without base. */
