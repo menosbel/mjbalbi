@@ -1,0 +1,31 @@
+---
+import { ETIQUETA_ESTADO, type Estado } from '../lib/obras';
+
+interface Props {
+  estado: Estado;
+}
+
+const { estado } = Astro.props;
+---
+
+<p class={`estado estado-${estado}`}>{ETIQUETA_ESTADO[estado]}</p>
+
+<style>
+  .estado {
+    margin: 0;
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* Disponible en el acento; Reservada y Vendida en el secundario, más tenues. */
+  .estado-disponible {
+    color: var(--color-acento);
+  }
+
+  .estado-reservada,
+  .estado-vendida {
+    color: var(--color-secundario);
+    opacity: 0.8;
+  }
+</style>

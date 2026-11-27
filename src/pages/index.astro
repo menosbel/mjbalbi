@@ -1,0 +1,75 @@
+---
+// Inicio: presentación breve de la artista (contenido/sobre-mi/presentacion.md)
+// y las Obras Destacadas, con el formato y el orden de la galería.
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PersonaJsonLd from '../components/PersonaJsonLd.astro';
+import TarjetaObra from '../components/TarjetaObra.astro';
+import { siteConfig } from '../../site.config.mjs';
+import { ordenGaleria } from '../lib/orden';
+import { url } from '../lib/urls';
+
+const presentacion = await getEntry('sobreMi', 'presentacion');
+const Presentacion = presentacion ? (await render(presentacion)).Content : undefined;
+const destacadas = ordenGaleria(await getCollection('obras', (o) => o.data.destacada));
+---
+
+<Base>
+  <PersonaJsonLd />
+  <h1>{siteConfig.artista}</h1>
+  {
+    Presentacion && (
+      <div class="presentacion">
+        <Presentacion />
+      </div>
+    )
+  }
+  {
+    destacadas.length > 0 && (
+      <section class="destacadas" aria-label="Obras destacadas">
+        <ul class="obras">
+          {destacadas.map((obra, i) => (
+            <li>
+              <TarjetaObra obra={obra} eager={i < 2} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+  <p class="ver-todas"><a href={url('/obras/')}>Ver todas las obras</a></p>
+</Base>
+
+<style>
+  .presentacion {
+    max-width: 40rem;
+    margin-block-end: 2.5rem;
+    font-size: 1.125rem;
+  }
+
+  /* La misma grilla que la galería: 1 columna, 2 desde 36rem, 3 desde 64rem. */
+  .obras {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 36rem) {
+    .obras {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .obras {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .ver-todas {
+    margin-block: 2rem 3rem;
+  }
+</style>

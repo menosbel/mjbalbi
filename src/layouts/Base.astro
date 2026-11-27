@@ -1,0 +1,102 @@
+---
+import { siteConfig } from '../../site.config.mjs';
+import Analitica from '../components/Analitica.astro';
+import Seo, { type ImagenSeo } from '../components/Seo.astro';
+import { mailto } from '../lib/consulta';
+import { url } from '../lib/urls';
+import '../styles/global.css';
+
+// Cada página pasa sus metadatos como props; todos tienen un valor por defecto,
+// pero title y description deben ser únicos por página (lo verifica test/seo.test.mjs).
+interface Props {
+  /** Título de la página; el nombre de la artista se agrega al final. Sin título: solo el nombre. */
+  title?: string;
+  /** Meta description. Por defecto, la descripción del sitio (siteConfig.descripcion). */
+  description?: string;
+  /** Imagen para compartir en redes ({ src: ImageMetadata, alt }). */
+  image?: ImagenSeo;
+  /** og:type; 'website' por defecto. */
+  type?: string;
+  /** Datos estructurados schema.org (JSON-LD): un objeto o una lista. */
+  jsonLd?: object | object[];
+}
+
+const { title, description = siteConfig.descripcion, image, type, jsonLd } = Astro.props;
+const instagram = `https://www.instagram.com/${siteConfig.instagram}/`;
+const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artista;
+const secciones = [
+  { texto: 'Obras', href: url('/obras/') },
+  { texto: 'Sobre mí', href: url('/sobre-mi/') },
+];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <Seo title={fullTitle} description={description} image={image} type={type} jsonLd={jsonLd} />
+    <Analitica />
+  </head>
+  <body>
+    <header class="contenedor encabezado">
+      <a class="nombre" href={url('/')}>{siteConfig.artista}</a>
+      <nav aria-label="Principal">
+        {
+          secciones.map(({ texto, href }) => (
+            <a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>
+              {texto}
+            </a>
+          ))
+        }
+      </nav>
+    </header>
+    <main class="contenedor">
+      <slot />
+    </main>
+    <footer class="contenedor pie">
+      <a href={mailto()}>{siteConfig.email}</a>
+      <a href={instagram} rel="me">Instagram @{siteConfig.instagram}</a>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .encabezado {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-block: 1.25rem;
+  }
+
+  .encabezado a {
+    color: var(--color-texto);
+    text-decoration: none;
+  }
+
+  .nombre {
+    font-family: var(--fuente-titulos);
+    font-size: 1.25rem;
+  }
+
+  nav {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  nav a[aria-current='page'] {
+    color: var(--color-acento);
+  }
+
+  .pie {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding-block: 2rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-secundario) 30%, transparent);
+    font-size: 0.9375rem;
+  }
+</style>

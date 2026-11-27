@@ -1,0 +1,62 @@
+---
+// Una Obra en una grilla (galería, Serie, inicio): foto principal, título y Estado,
+// todo dentro de un link a su página. Va dentro de un <li>.
+import type { CollectionEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import EtiquetaEstado from './EtiquetaEstado.astro';
+import { urlObra } from '../lib/urls';
+
+interface Props {
+  obra: CollectionEntry<'obras'>;
+  /** true para las primeras de la grilla, que se ven sin hacer scroll. */
+  eager?: boolean;
+}
+
+const { obra, eager = false } = Astro.props;
+const { titulo, fotos, estado } = obra.data;
+const [foto] = fotos;
+// Columnas de la grilla: 1 en el celular, 2 desde 36rem, 3 desde 64rem.
+const sizes = '(min-width: 64rem) 33vw, (min-width: 36rem) 50vw, 100vw';
+const MAX = 1200;
+// Nunca se agranda una foto: los tamaños llegan hasta el ancho del original.
+const widths = [...[360, 480, 800].filter((w) => w < foto.src.width), Math.min(foto.src.width, MAX)];
+---
+
+<a class="tarjeta" href={urlObra(obra.id)}>
+  <Picture
+    src={foto.src}
+    alt={foto.alt}
+    widths={widths}
+    sizes={sizes}
+    formats={['webp']}
+    loading={eager ? 'eager' : 'lazy'}
+  />
+  <h2>{titulo}</h2>
+  <EtiquetaEstado estado={estado} />
+</a>
+
+<style>
+  .tarjeta {
+    display: grid;
+    gap: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .tarjeta :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    background: #eee9e0;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .tarjeta:hover h2 {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+</style>
