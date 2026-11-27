@@ -1,9 +1,10 @@
 ---
 import { siteConfig } from '../../site.config.mjs';
 import Analitica from '../components/Analitica.astro';
-import Seo, { type ImagenSeo } from '../components/Seo.astro';
+import Seo from '../components/Seo.astro';
 import { mailto } from '../lib/consulta';
-import { url } from '../lib/urls';
+import type { Foto } from '../lib/obras';
+import { url, urlInstagram } from '../lib/urls';
 import '../styles/global.css';
 
 // Cada página pasa sus metadatos como props; todos tienen un valor por defecto,
@@ -14,7 +15,7 @@ interface Props {
   /** Meta description. Por defecto, la descripción del sitio (siteConfig.descripcion). */
   description?: string;
   /** Imagen para compartir en redes ({ src: ImageMetadata, alt }). */
-  image?: ImagenSeo;
+  image?: Foto;
   /** og:type; 'website' por defecto. */
   type?: string;
   /** Datos estructurados schema.org (JSON-LD): un objeto o una lista. */
@@ -22,7 +23,6 @@ interface Props {
 }
 
 const { title, description = siteConfig.descripcion, image, type, jsonLd } = Astro.props;
-const instagram = `https://www.instagram.com/${siteConfig.instagram}/`;
 const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artista;
 const secciones = [
   { texto: 'Obras', href: url('/obras/') },
@@ -57,7 +57,7 @@ const secciones = [
     </main>
     <footer class="contenedor pie">
       <a href={mailto()}>{siteConfig.email}</a>
-      <a href={instagram} rel="me">Instagram @{siteConfig.instagram}</a>
+      <a href={urlInstagram()} rel="me">Instagram @{siteConfig.instagram}</a>
     </footer>
   </body>
 </html>
