@@ -19,6 +19,8 @@ export const siteConfig = {
   contentDir: env.CONTENT_DIR ?? './contenido',
   /** Nombre de la artista, para títulos y metadatos. */
   artista: 'María Julia Balbi',
+  /** Descripción del sitio: meta description de las páginas que no tienen una propia. */
+  descripcion: 'Pinturas originales de María Julia Balbi: óleos, acrílicos y pasteles.',
 };
 
 function stripTrailingSlash(value) {
