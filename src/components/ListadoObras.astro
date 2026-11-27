@@ -1,0 +1,43 @@
+---
+// Página de listado compartida por /obras/ y /obras/<técnica>/.
+import Base from '../layouts/Base.astro';
+import GaleriaObras from './GaleriaObras.astro';
+import FiltroTecnicas from './FiltroTecnicas.astro';
+import { ARTISTA, TECNICAS, type Tecnica } from '../config';
+import { obras as todasLasObras, urlAbsoluta, urlObra } from '../lib/sitio';
+
+interface Props {
+  tecnica?: Tecnica;
+}
+const { tecnica } = Astro.props;
+const obras = (await todasLasObras()).filter((o) => !tecnica || o.data.tecnica === tecnica);
+
+const titulo = tecnica ? TECNICAS[tecnica].plural : 'Obras';
+const descripcion = tecnica
+  ? `${TECNICAS[tecnica].plural} de ${ARTISTA.nombre}. Obras originales a la venta: consultá precio y disponibilidad.`
+  : `Todas las pinturas de ${ARTISTA.nombre}: obras originales al óleo, acrílico y pastel a la venta.`;
+
+const site = Astro.site;
+const coleccion = {
+  '@type': 'CollectionPage',
+  name: `${titulo} · ${ARTISTA.nombre}`,
+  url: urlAbsoluta(Astro.url.pathname, site),
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: obras.map((o, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: urlAbsoluta(urlObra(o), site),
+      name: o.data.titulo,
+    })),
+  },
+};
+---
+
+<Base titulo={titulo} descripcion={descripcion} jsonLd={[coleccion]}>
+  <header class="encabezado-pagina">
+    <h1>{titulo}</h1>
+    <FiltroTecnicas actual={tecnica} />
+  </header>
+  {obras.length ? <GaleriaObras obras={obras} /> : <p class="centrado tenue">Pronto habrá obras en esta técnica.</p>}
+</Base>

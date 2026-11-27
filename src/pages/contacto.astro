@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import { ARTISTA, INSTAGRAM_URL } from '../config';
+import { mailtoConsulta, url, urlAbsoluta } from '../lib/sitio';
+
+const contacto = {
+  '@type': 'ContactPage',
+  url: urlAbsoluta(Astro.url.pathname, Astro.site),
+  name: `Contacto · ${ARTISTA.nombre}`,
+  about: { '@id': urlAbsoluta(url('/#artista'), Astro.site) },
+};
+---
+
+<Base
+  titulo="Contacto"
+  descripcion={`Contactá a ${ARTISTA.nombre} para comprar una obra original o consultar precios, disponibilidad y envíos.`}
+  jsonLd={[contacto]}
+>
+  <section class="contacto">
+    <h1>Contacto</h1>
+    <p>
+      ¿Te interesa alguna obra? Escribime por email para consultar precio, disponibilidad y envíos. Si es por una obra en
+      particular, contame cuál: desde la página de cada obra podés escribirme con los datos ya cargados.
+    </p>
+    <p class="contacto-email"><a href={mailtoConsulta()}>{ARTISTA.email}</a></p>
+    <p>
+      También podés seguir mi trabajo en Instagram:
+      <a href={INSTAGRAM_URL} rel="me noopener" target="_blank">@{ARTISTA.instagram}</a>
+    </p>
+  </section>
+</Base>

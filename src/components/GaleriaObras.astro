@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+import { ESTADOS } from '../config';
+import { medidas, tecnicaYSoporte, urlObra, type Obra } from '../lib/sitio';
+
+interface Props {
+  obras: Obra[];
+  /** Las primeras imágenes se cargan sin lazy-loading (mejora el LCP). */
+  prioridad?: number;
+  encabezado?: 'h2' | 'h3';
+}
+
+const { obras, prioridad = 2, encabezado: H = 'h2' } = Astro.props;
+---
+
+<ul class="galeria">
+  {
+    obras.map((obra, i) => (
+      <li>
+        <a href={urlObra(obra)} class="tarjeta">
+          <Image
+            src={obra.data.foto}
+            alt={obra.data.alt}
+            widths={[400, 700, 1000]}
+            sizes="(min-width: 1100px) 33vw, (min-width: 640px) 50vw, 100vw"
+            loading={i < prioridad ? 'eager' : 'lazy'}
+            fetchpriority={i === 0 ? 'high' : undefined}
+          />
+          <H class="tarjeta-titulo">{obra.data.titulo}</H>
+          <p class="tarjeta-datos">
+            {tecnicaYSoporte(obra)} · {medidas(obra)}
+            {obra.data.estado !== 'disponible' && (
+              <span class={`estado estado-${obra.data.estado}`}>{ESTADOS[obra.data.estado]}</span>
+            )}
+          </p>
+        </a>
+      </li>
+    ))
+  }
+</ul>

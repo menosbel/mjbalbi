@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import GaleriaObras from '../components/GaleriaObras.astro';
+import { artista, obras, url } from '../lib/sitio';
+import { ARTISTA } from '../config';
+
+const todas = await obras();
+const destacadas = todas.filter((o) => o.data.destacada);
+const bio = await artista();
+---
+
+<Base>
+  <section class="intro">
+    <h1>{ARTISTA.nombre}</h1>
+    <p class="bajada">Pinturas originales al óleo, acrílico y pastel.</p>
+  </section>
+
+  <section aria-labelledby="destacadas">
+    <h2 id="destacadas" class="visualmente-oculto">Obras destacadas</h2>
+    <GaleriaObras obras={destacadas.length ? destacadas : todas.slice(0, 3)} />
+    <p class="centrado"><a class="enlace-flecha" href={url('/obras/')}>Ver todas las obras</a></p>
+  </section>
+
+  <section class="resumen-artista">
+    <h2>Sobre la artista</h2>
+    <p>{bio.data.resumen}</p>
+    <p><a class="enlace-flecha" href={url('/sobre-mi/')}>Leer la biografía</a></p>
+  </section>
+
+  <section class="llamado">
+    <h2>¿Te interesa una obra?</h2>
+    <p>Escribime para consultar precio, disponibilidad y envíos.</p>
+    <a class="boton" href={url('/contacto/')}>Contacto</a>
+  </section>
+</Base>

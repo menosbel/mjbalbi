@@ -1,0 +1,431 @@
+/* Minimalista: las protagonistas son las Obras. Sin fuentes externas, para cargar rápido. */
+:root {
+  --fondo: #faf9f6;
+  --texto: #1f1d1a;
+  --tenue: #6b665e;
+  --linea: #e4e0d8;
+  --acento: #1f1d1a;
+  --sobre-acento: #faf9f6;
+  --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ancho: 1240px;
+  --gutter: clamp(16px, 4vw, 48px);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #151412;
+    --texto: #ece8e1;
+    --tenue: #a39d93;
+    --linea: #2e2b27;
+    --acento: #ece8e1;
+    --sobre-acento: #151412;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin: 0 0 0.5em;
+}
+
+h2 {
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+}
+
+:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 3px;
+}
+
+.saltar {
+  position: absolute;
+  left: -9999px;
+}
+.saltar:focus {
+  left: 1rem;
+  top: 1rem;
+  background: var(--fondo);
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.tenue {
+  color: var(--tenue);
+}
+.pequeno {
+  font-size: 0.875rem;
+}
+.centrado {
+  text-align: center;
+}
+
+/* Cabecera y pie */
+.cabecera {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 1.75rem var(--gutter);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.marca {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  text-decoration: none;
+}
+
+.cabecera ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+}
+
+.cabecera nav a,
+.filtro a {
+  text-decoration: none;
+  color: var(--tenue);
+  font-size: 0.95rem;
+}
+.cabecera nav a:hover,
+.cabecera nav a[aria-current='page'],
+.filtro a:hover,
+.filtro a[aria-current='page'] {
+  color: var(--texto);
+  text-decoration: underline;
+}
+
+main {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 4rem;
+}
+
+.pie {
+  border-top: 1px solid var(--linea);
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 2rem var(--gutter) 3rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+.pie p {
+  margin: 0.25rem 0;
+}
+.pie span {
+  margin: 0 0.5rem;
+}
+
+/* Inicio */
+.intro {
+  text-align: center;
+  padding: clamp(2rem, 8vw, 5rem) 0 clamp(2rem, 5vw, 3.5rem);
+}
+.intro h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  margin-bottom: 0.25em;
+}
+.bajada {
+  color: var(--tenue);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.resumen-artista,
+.llamado {
+  max-width: 42rem;
+  margin: 5rem auto 0;
+  text-align: center;
+}
+
+.enlace-flecha::after {
+  content: ' →';
+}
+
+.boton {
+  display: inline-block;
+  background: var(--acento);
+  color: var(--sobre-acento);
+  text-decoration: none;
+  padding: 0.85rem 1.6rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  border-radius: 2px;
+  margin-top: 0.5rem;
+}
+.boton:hover {
+  opacity: 0.85;
+}
+
+/* Galería */
+.galeria {
+  list-style: none;
+  margin: 0 0 3rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 2.5rem);
+  align-items: end;
+}
+
+.tarjeta {
+  display: block;
+  text-decoration: none;
+}
+.tarjeta img {
+  width: 100%;
+  transition: opacity 0.2s;
+}
+.tarjeta:hover img {
+  opacity: 0.9;
+}
+.tarjeta-titulo {
+  font-size: 1.15rem;
+  margin: 0.9rem 0 0.15rem;
+}
+.tarjeta-datos {
+  margin: 0;
+  color: var(--tenue);
+  font-size: 0.875rem;
+}
+
+.estado {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--tenue);
+}
+.estado-vendida::before {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: #b0413e;
+  margin-right: 0.35em;
+  vertical-align: 0.05em;
+}
+.estado-reservada::before {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  margin-right: 0.35em;
+  vertical-align: 0.05em;
+}
+.ficha .estado {
+  margin-left: 0;
+}
+
+/* Encabezados de listados */
+.encabezado-pagina {
+  text-align: center;
+  padding: 2rem 0 2.5rem;
+}
+.encabezado-pagina .texto {
+  max-width: 40rem;
+  margin: 0 auto;
+  color: var(--tenue);
+}
+.filtro {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.migas {
+  font-size: 0.875rem;
+  color: var(--tenue);
+  padding-top: 0.5rem;
+}
+.migas a {
+  color: var(--tenue);
+}
+.migas span {
+  margin: 0 0.4rem;
+}
+
+/* Detalle de Obra */
+.obra {
+  display: grid;
+  gap: 2rem clamp(2rem, 5vw, 4rem);
+  margin-top: 1.5rem;
+}
+@media (min-width: 960px) {
+  .obra {
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  .obra-info {
+    position: sticky;
+    top: 2rem;
+  }
+}
+.obra-foto {
+  margin: 0;
+}
+.obra-foto img {
+  width: 100%;
+  max-height: 85vh;
+  object-fit: contain;
+  object-position: left top;
+}
+.ficha {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1.25rem;
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+}
+.ficha dt {
+  color: var(--tenue);
+}
+.ficha dd {
+  margin: 0;
+}
+.descripcion {
+  border-top: 1px solid var(--linea);
+  padding-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.paginacion {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--linea);
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  font-size: 0.95rem;
+}
+.paginacion a {
+  text-decoration: none;
+  color: var(--tenue);
+}
+.paginacion a:hover {
+  color: var(--texto);
+}
+
+/* Series */
+.series {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: 3rem;
+}
+.serie-tarjeta {
+  display: block;
+  text-decoration: none;
+}
+.serie-tarjeta img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.serie-tarjeta h2 {
+  margin: 1rem 0 0.25rem;
+}
+.serie-tarjeta p {
+  margin: 0.25rem 0;
+}
+
+/* Sobre mí y contacto */
+.bio,
+.contacto {
+  max-width: 42rem;
+  margin: 2rem auto 0;
+}
+.retrato {
+  width: min(100%, 320px);
+  margin-bottom: 2rem;
+}
+.statement {
+  margin: 0;
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--linea);
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-style: italic;
+}
+.trayectoria {
+  list-style: none;
+  padding: 0;
+}
+.trayectoria li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--linea);
+}
+.anio {
+  display: inline-block;
+  min-width: 4rem;
+  color: var(--tenue);
+  font-variant-numeric: tabular-nums;
+}
+.contacto-email {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  overflow-wrap: anywhere;
+}

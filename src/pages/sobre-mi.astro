@@ -1,0 +1,59 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { ARTISTA, INSTAGRAM_URL } from '../config';
+import { artista, url, urlAbsoluta } from '../lib/sitio';
+
+const bio = await artista();
+const { Content } = await render(bio);
+const site = Astro.site;
+
+const perfil = {
+  '@type': 'ProfilePage',
+  url: urlAbsoluta(Astro.url.pathname, site),
+  name: `Sobre ${ARTISTA.nombre}`,
+  mainEntity: { '@id': urlAbsoluta(url('/#artista'), site) },
+};
+---
+
+<Base
+  titulo="Sobre mí"
+  descripcion={bio.data.resumen}
+  imagen={bio.data.retrato}
+  imagenAlt={bio.data.retrato ? `Retrato de ${ARTISTA.nombre}` : undefined}
+  tipo="profile"
+  jsonLd={[perfil]}
+>
+  <article class="bio">
+    {bio.data.retrato && <Image class="retrato" src={bio.data.retrato} alt={`Retrato de ${ARTISTA.nombre}`} widths={[400, 800]} sizes="(min-width: 800px) 320px, 100vw" />}
+    <h1>Sobre mí</h1>
+    <div class="texto"><Content /></div>
+
+    <section>
+      <h2>Statement</h2>
+      <blockquote class="statement"><p>{bio.data.statement}</p></blockquote>
+    </section>
+
+    {
+      bio.data.trayectoria.length > 0 && (
+        <section>
+          <h2>Trayectoria</h2>
+          <ul class="trayectoria">
+            {bio.data.trayectoria.map((t) => (
+              <li>
+                <span class="anio">{t.anio}</span> {t.texto}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <p>
+      <a class="enlace-flecha" href={url('/obras/')}>Ver las obras</a>
+      <span aria-hidden="true">·</span>
+      <a href={INSTAGRAM_URL} rel="me noopener" target="_blank">Seguime en Instagram</a>
+    </p>
+  </article>
+</Base>

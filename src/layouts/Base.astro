@@ -1,0 +1,112 @@
+---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { ARTISTA, INSTAGRAM_URL, SITIO } from '../config';
+import { artista, obras, personaJsonLd, url, urlAbsoluta } from '../lib/sitio';
+import '../styles/global.css';
+
+interface Props {
+  titulo?: string;
+  descripcion?: string;
+  imagen?: ImageMetadata;
+  imagenAlt?: string;
+  tipo?: 'website' | 'article' | 'profile';
+  jsonLd?: Record<string, unknown>[];
+}
+
+const { titulo, descripcion = SITIO.descripcion, imagen, imagenAlt, tipo = 'website', jsonLd = [] } = Astro.props;
+const site = Astro.site;
+const tituloCompleto = titulo ? `${titulo} · ${ARTISTA.nombre}` : SITIO.titulo;
+const canonical = urlAbsoluta(Astro.url.pathname, site);
+
+// Imagen para compartir: la de la página o, si no hay, la primera Obra Destacada.
+const todas = await obras();
+const portada = todas.find((o) => o.data.destacada) ?? todas[0];
+const og = await getImage({ src: imagen ?? portada.data.foto, width: 1200, format: 'jpg' });
+const ogUrl = urlAbsoluta(og.src, site);
+const ogAlt = imagenAlt ?? (imagen ? '' : portada.data.alt);
+
+const bio = await artista();
+const grafo = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': urlAbsoluta(url('/#sitio'), site),
+      url: urlAbsoluta(url('/'), site),
+      name: ARTISTA.nombre,
+      inLanguage: 'es-AR',
+      publisher: { '@id': urlAbsoluta(url('/#artista'), site) },
+    },
+    personaJsonLd(site, bio.data.resumen),
+    ...jsonLd,
+  ],
+};
+
+const ruta = Astro.url.pathname;
+const nav = [
+  { href: url('/obras/'), texto: 'Obras' },
+  { href: url('/series/'), texto: 'Series' },
+  { href: url('/sobre-mi/'), texto: 'Sobre mí' },
+  { href: url('/contacto/'), texto: 'Contacto' },
+];
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descripcion} />
+    <meta name="author" content={ARTISTA.nombre} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+    <meta name="theme-color" content="#faf9f6" />
+
+    <meta property="og:type" content={tipo} />
+    <meta property="og:locale" content={SITIO.locale} />
+    <meta property="og:site_name" content={ARTISTA.nombre} />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    {ogAlt && <meta property="og:image:alt" content={ogAlt} />}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(grafo)} />
+  </head>
+  <body>
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+    <header class="cabecera">
+      <a class="marca" href={url('/')}>{ARTISTA.nombre}</a>
+      <nav aria-label="Principal">
+        <ul>
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href} aria-current={ruta.startsWith(item.href) ? 'page' : undefined}>
+                  {item.texto}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </header>
+
+    <main id="contenido">
+      <slot />
+    </main>
+
+    <footer class="pie">
+      <p>
+        <a href={`mailto:${ARTISTA.email}`}>{ARTISTA.email}</a>
+        <span aria-hidden="true">·</span>
+        <a href={INSTAGRAM_URL} rel="me noopener" target="_blank">Instagram @{ARTISTA.instagram}</a>
+      </p>
+      <p class="tenue">© {new Date().getFullYear()} {ARTISTA.nombre}. Todas las obras son originales.</p>
+    </footer>
+  </body>
+</html>

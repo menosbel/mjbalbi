@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/sitio';
+---
+
+<Base titulo="Página no encontrada">
+  <section class="contacto">
+    <h1>No encontramos esta página</h1>
+    <p>Puede que la obra se haya movido. <a href={url('/obras/')}>Ver todas las obras</a>.</p>
+  </section>
+</Base>

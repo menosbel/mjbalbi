@@ -1,0 +1,40 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import GaleriaObras from '../../components/GaleriaObras.astro';
+import { ARTISTA } from '../../config';
+import { obras, series, url, urlAbsoluta, urlObra, type Serie } from '../../lib/sitio';
+
+export async function getStaticPaths() {
+  return (await series()).map((serie) => ({ params: { serie: serie.id }, props: { serie } }));
+}
+
+const { serie } = Astro.props as { serie: Serie };
+const { Content } = await render(serie);
+const delaSerie = (await obras()).filter((o) => o.data.serie?.id === serie.id);
+const site = Astro.site;
+
+const jsonLd = {
+  '@type': 'CreativeWorkSeries',
+  name: serie.data.nombre,
+  description: serie.data.resumen,
+  url: urlAbsoluta(Astro.url.pathname, site),
+  creator: { '@id': urlAbsoluta(url('/#artista'), site) },
+  hasPart: delaSerie.map((o) => ({ '@id': `${urlAbsoluta(urlObra(o), site)}#obra` })),
+};
+---
+
+<Base
+  titulo={`Serie ${serie.data.nombre}`}
+  descripcion={`${serie.data.resumen} Serie de pinturas de ${ARTISTA.nombre}.`}
+  imagen={delaSerie[0]?.data.foto}
+  imagenAlt={delaSerie[0]?.data.alt}
+  jsonLd={[jsonLd]}
+>
+  <nav class="migas" aria-label="Migas de pan"><a href={url('/series/')}>Series</a></nav>
+  <header class="encabezado-pagina">
+    <h1>{serie.data.nombre}</h1>
+    <div class="texto"><Content /></div>
+  </header>
+  <GaleriaObras obras={delaSerie} />
+</Base>
