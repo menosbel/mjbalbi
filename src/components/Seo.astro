@@ -32,6 +32,7 @@ const datos = jsonLd === undefined ? [] : [jsonLd].flat();
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
+{!siteConfig.indexar && <meta name="robots" content="noindex, nofollow" />}
 
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
