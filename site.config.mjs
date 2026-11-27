@@ -19,6 +19,8 @@ export const siteConfig = {
   contentDir: env.CONTENT_DIR ?? './contenido',
   /** Nombre de la artista, para títulos y metadatos. */
   artista: 'María Julia Balbi',
+  /** Usuario de Instagram de la artista, sin @. */
+  instagram: 'mjbalbi.arte',
 };
 
 function stripTrailingSlash(value) {

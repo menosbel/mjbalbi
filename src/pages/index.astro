@@ -3,6 +3,7 @@
 // y las Destacadas en otro ticket de #4.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import PersonaJsonLd from '../components/PersonaJsonLd.astro';
 import { siteConfig } from '../../site.config.mjs';
 import { urlObra } from '../lib/urls';
 
@@ -10,6 +11,7 @@ const obras = await getCollection('obras');
 ---
 
 <Base>
+  <PersonaJsonLd />
   <h1>{siteConfig.artista}</h1>
   <ul>
     {
