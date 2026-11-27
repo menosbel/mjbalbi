@@ -28,9 +28,9 @@ for (const base of ['/mjbalbi', '']) {
       assert.deepEqual(site.pages(), ['/', '/obras/', '/obras/atardecer-en-el-rio/', '/obras/sin-titulo-01/', '/sobre-mi/']);
     });
 
-    test('el inicio enlaza a cada Obra', () => {
+    test('el inicio enlaza a la galería', () => {
       const hrefs = site.page('/').querySelectorAll('main a').map((a) => a.getAttribute('href'));
-      assert.deepEqual(hrefs.sort(), [`${base}/obras/atardecer-en-el-rio/`, `${base}/obras/sin-titulo-01/`]);
+      assert.ok(hrefs.includes(`${base}/obras/`), hrefs.join('\n'));
     });
 
     test('todos los links internos e imágenes apuntan a archivos del build, bajo el base path', () => {

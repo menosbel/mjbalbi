@@ -11,6 +11,7 @@ soporte: lienzo
 año: 2025
 enmarcada: false
 estado: disponible
+destacada: true
 ---
 
 Obra de ejemplo para probar el sitio mientras no se carga el contenido real.

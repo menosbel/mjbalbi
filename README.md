@@ -127,6 +127,12 @@ premios:
 
 Dentro de esos textos no se usan títulos de nivel 1 (`#`): la página ya tiene el suyo.
 
+## Inicio
+
+El inicio muestra la presentación de `contenido/sobre-mi/presentacion.md` (unas
+líneas en Markdown; hoy es texto de ejemplo) y las **Obras** con `destacada: true`,
+en el orden de la galería. Si no hay **Destacadas**, esa sección no aparece.
+
 ## Publicar
 
 Cada push a `main` corre `.github/workflows/pages.yml`: instala dependencias, corre

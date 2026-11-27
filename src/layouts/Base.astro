@@ -12,6 +12,10 @@ interface Props {
 const { title } = Astro.props;
 const instagram = `https://www.instagram.com/${siteConfig.instagram}/`;
 const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artista;
+const secciones = [
+  { texto: 'Obras', href: url('/obras/') },
+  { texto: 'Sobre mí', href: url('/sobre-mi/') },
+];
 ---
 
 <!doctype html>
@@ -24,7 +28,16 @@ const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artis
   </head>
   <body>
     <header class="contenedor encabezado">
-      <a href={url('/')}>{siteConfig.artista}</a>
+      <a class="nombre" href={url('/')}>{siteConfig.artista}</a>
+      <nav aria-label="Principal">
+        {
+          secciones.map(({ texto, href }) => (
+            <a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>
+              {texto}
+            </a>
+          ))
+        }
+      </nav>
     </header>
     <main class="contenedor">
       <slot />
@@ -38,14 +51,31 @@ const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artis
 
 <style>
   .encabezado {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
     padding-block: 1.25rem;
   }
 
   .encabezado a {
-    font-family: var(--fuente-titulos);
-    font-size: 1.25rem;
     color: var(--color-texto);
     text-decoration: none;
+  }
+
+  .nombre {
+    font-family: var(--fuente-titulos);
+    font-size: 1.25rem;
+  }
+
+  nav {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  nav a[aria-current='page'] {
+    color: var(--color-acento);
   }
 
   .pie {
