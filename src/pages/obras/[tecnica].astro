@@ -1,0 +1,12 @@
+---
+import ListadoObras from '../../components/ListadoObras.astro';
+import { TECNICAS, type Tecnica } from '../../config';
+
+export function getStaticPaths() {
+  return Object.keys(TECNICAS).map((tecnica) => ({ params: { tecnica } }));
+}
+
+const tecnica = Astro.params.tecnica as Tecnica;
+---
+
+<ListadoObras tecnica={tecnica} />

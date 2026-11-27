@@ -1,0 +1,21 @@
+---
+import { TECNICAS, type Tecnica } from '../config';
+import { url, urlTecnica } from '../lib/sitio';
+
+interface Props {
+  actual?: Tecnica;
+}
+const { actual } = Astro.props;
+const tecnicas = Object.entries(TECNICAS) as [Tecnica, (typeof TECNICAS)[Tecnica]][];
+---
+
+<nav class="filtro" aria-label="Filtrar por técnica">
+  <a href={url('/obras/')} aria-current={!actual ? 'page' : undefined}>Todas</a>
+  {
+    tecnicas.map(([clave, t]) => (
+      <a href={urlTecnica(clave)} aria-current={actual === clave ? 'page' : undefined}>
+        {t.nombre}
+      </a>
+    ))
+  }
+</nav>

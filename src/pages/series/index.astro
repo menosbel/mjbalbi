@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { ARTISTA } from '../../config';
+import { obras, series, urlSerie } from '../../lib/sitio';
+
+const todas = await obras();
+const lista = (await series()).map((serie) => ({
+  serie,
+  obras: todas.filter((o) => o.data.serie?.id === serie.id),
+}));
+---
+
+<Base titulo="Series" descripcion={`Las series de pinturas de ${ARTISTA.nombre}: conjuntos de obras concebidos como grupo.`}>
+  <header class="encabezado-pagina">
+    <h1>Series</h1>
+  </header>
+  <ul class="series">
+    {
+      lista.map(({ serie, obras }) => (
+        <li>
+          <a href={urlSerie(serie)} class="serie-tarjeta">
+            {obras[0] && <Image src={obras[0].data.foto} alt={obras[0].data.alt} widths={[500, 900]} sizes="(min-width: 800px) 45vw, 100vw" />}
+            <h2>{serie.data.nombre}</h2>
+            <p>{serie.data.resumen}</p>
+            <p class="tenue pequeno">{obras.length} {obras.length === 1 ? 'obra' : 'obras'}</p>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Base>
