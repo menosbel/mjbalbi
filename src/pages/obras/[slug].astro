@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const obras = await getCollection('obras');
+  return obras.map((obra) => ({ params: { slug: obra.id }, props: { obra } }));
+}
+
+const { obra } = Astro.props;
+---
+
+<h1>{obra.data.titulo}</h1>
