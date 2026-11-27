@@ -1,0 +1,95 @@
+---
+// La galería de Obras con sus filtros por Técnica y Serie. La usan /obras/ (todas)
+// y las vistas filtradas; `obras` ya viene filtrada y en el orden de la galería.
+import type { CollectionEntry } from 'astro:content';
+import TarjetaObra from './TarjetaObra.astro';
+import type { Filtro } from '../lib/filtros';
+
+interface Props {
+  obras: CollectionEntry<'obras'>[];
+  filtros: Filtro[];
+}
+
+const { obras, filtros } = Astro.props;
+const actual = Astro.url.pathname;
+---
+
+<nav class="filtros" aria-label="Filtrar obras">
+  <ul>
+    {
+      filtros.map((f) => (
+        <li>
+          <a href={f.href} aria-current={f.href === actual ? 'page' : undefined}>
+            {f.texto}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+<ul class="galeria">
+  {
+    obras.map((obra, i) => (
+      <li>
+        <TarjetaObra obra={obra} eager={i < 2} />
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .filtros ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 2rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .filtros a {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--color-secundario);
+    border-radius: 999px;
+    color: var(--color-secundario);
+    text-decoration: none;
+  }
+
+  .filtros a:hover,
+  .filtros a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .filtros a:focus-visible {
+    outline: 2px solid var(--color-secundario);
+    outline-offset: 2px;
+  }
+
+  .filtros a[aria-current='page'] {
+    background: var(--color-secundario);
+    color: var(--color-fondo);
+  }
+
+  .galeria {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem 1.5rem;
+    margin: 0;
+    padding: 0 0 3rem;
+    list-style: none;
+  }
+
+  @media (min-width: 36rem) {
+    .galeria {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .galeria {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

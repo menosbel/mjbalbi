@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { before, describe, test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { buildSite } from './harness.mjs';
+import { buildSite, reglasCss } from './harness.mjs';
 
 /** The gallery's items (one per Obra), in page order. */
 const items = (page) => page.querySelectorAll('main .galeria > li');
@@ -74,29 +74,6 @@ describe('galería /obras/', () => {
     }
   });
 });
-
-/**
- * CSS rules that apply to the page (inline <style> plus linked stylesheets),
- * as { selector, cuerpo, media } with media = the @media condition or null.
- */
-function reglasCss(site, page) {
-  const linked = page
-    .querySelectorAll('link[rel="stylesheet"]')
-    .map((l) => readFileSync(site.resolveUrl(l.getAttribute('href')), 'utf8'));
-  const css = [...page.querySelectorAll('style').map((s) => s.text), ...linked].join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
-  const reglas = [];
-  const re = /@media([^{]*)\{((?:[^{}]*\{[^{}]*\})*)\s*\}|([^{}@]+)\{([^{}]*)\}/g;
-  for (const m of css.matchAll(re)) {
-    if (m[1] !== undefined) {
-      for (const [, selector, cuerpo] of m[2].matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-        reglas.push({ selector: selector.trim(), cuerpo, media: m[1].trim() });
-      }
-    } else {
-      reglas.push({ selector: m[3].trim(), cuerpo: m[4], media: null });
-    }
-  }
-  return reglas;
-}
 
 describe('orden de la galería', () => {
   test('primero Disponibles y Reservadas juntas, de la más reciente a la más vieja; Vendidas al final', async () => {
