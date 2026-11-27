@@ -10,6 +10,7 @@ const casos = [
   { fixture: 'invalidas-estado-inexistente', problema: 'un Estado que no existe', mensaje: /estado: Invalid option/ },
   { fixture: 'invalidas-falta-titulo', problema: 'un campo obligatorio faltante', mensaje: /titulo: Required/ },
   { fixture: 'invalidas-slug-repetido', problema: 'dos Obras con el mismo slug', mensaje: /mismo slug "repetida"/ },
+  { fixture: 'invalidas-serie-inexistente', problema: 'una Serie que no existe', mensaje: /Serie "no-existe", que no existe/ },
 ];
 
 describe('el build falla con una Obra mal cargada', () => {

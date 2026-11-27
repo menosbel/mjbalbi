@@ -1,0 +1,74 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { siteConfig } from '../../../site.config.mjs';
+import { ordenGaleria } from '../../lib/orden';
+import { textoPlano } from '../../lib/seo';
+import { urlObra } from '../../lib/urls';
+
+export async function getStaticPaths() {
+  const series = await getCollection('series');
+  return series.map((serie) => ({ params: { slug: serie.id }, props: { serie } }));
+}
+
+const { serie } = Astro.props;
+const { Content } = await render(serie);
+const obras = ordenGaleria(await getCollection('obras', (obra) => obra.data.serie?.id === serie.id));
+---
+
+<Base
+  title={serie.data.nombre}
+  description={`Serie ${serie.data.nombre}, de ${siteConfig.artista}. ${textoPlano(serie.body)}`.trim()}
+  image={obras[0]?.data.fotos[0]}
+>
+  <article class="serie">
+    <h1>{serie.data.nombre}</h1>
+    <div class="texto">
+      <Content />
+    </div>
+    <ul class="obras">
+      {
+        obras.map((obra) => (
+          <li>
+            <a href={urlObra(obra.id)}>
+              <Image src={obra.data.fotos[0].src} alt={obra.data.fotos[0].alt} width={600} />
+              <span class="titulo">{obra.data.titulo}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </article>
+</Base>
+
+<style>
+  .serie {
+    padding-bottom: 3rem;
+  }
+
+  .texto {
+    max-width: 40rem;
+  }
+
+  .obras {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .obras a {
+    display: grid;
+    gap: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .obras img {
+    width: 100%;
+    height: auto;
+  }
+</style>

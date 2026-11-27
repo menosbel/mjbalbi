@@ -1,0 +1,77 @@
+---
+// Sobre mí: biografía, Statement y Trayectoria, cargados en contenido/sobre-mi/.
+import { getEntry, render } from 'astro:content';
+import { siteConfig } from '../../site.config.mjs';
+import Base from '../layouts/Base.astro';
+import PersonaJsonLd from '../components/PersonaJsonLd.astro';
+
+async function texto(id: string) {
+  const entrada = await getEntry('sobreMi', id);
+  return entrada ? (await render(entrada)).Content : undefined;
+}
+
+const Biografia = await texto('biografia');
+const Statement = await texto('statement');
+
+const trayectoria = (await getEntry('sobreMi', 'trayectoria'))?.data;
+const apartados = trayectoria
+  ? [
+      { titulo: 'Formación', antecedentes: trayectoria.formacion },
+      { titulo: 'Exposiciones', antecedentes: trayectoria.exposiciones },
+      { titulo: 'Premios', antecedentes: trayectoria.premios },
+    ].filter((a) => a.antecedentes.length > 0)
+  : [];
+---
+
+<Base
+  title="Sobre mí"
+  description={`Biografía, statement y trayectoria de ${siteConfig.artista}: formación, exposiciones y premios.`}
+>
+  <PersonaJsonLd />
+  <h1>Sobre mí</h1>
+  {Biografia && <Biografia />}
+  {
+    Statement && (
+      <section>
+        <h2>Statement</h2>
+        <Statement />
+      </section>
+    )
+  }
+  {
+    apartados.length > 0 && (
+      <section class="trayectoria">
+        <h2>Trayectoria</h2>
+        {apartados.map(({ titulo, antecedentes }) => (
+          <>
+            <h3>{titulo}</h3>
+            <ul>
+              {antecedentes.map(({ año, texto }) => (
+                <li>
+                  <span class="año">{año}</span> {texto}
+                </li>
+              ))}
+            </ul>
+          </>
+        ))}
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .trayectoria ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .trayectoria li {
+    margin-block: 0.25rem;
+  }
+
+  .año {
+    color: var(--color-secundario);
+    font-variant-numeric: tabular-nums;
+    margin-inline-end: 0.5rem;
+  }
+</style>

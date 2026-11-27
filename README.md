@@ -38,6 +38,11 @@ contenido. Algunos valores se pueden pisar con variables de entorno (`SITE_URL`,
 - `goatcounter`: el código de la cuenta de GoatCounter (analítica sin cookies). Vacío,
   no se incluye el script.
 
+También están ahí el email de la artista (`email`) y su usuario de Instagram
+(`instagram`), que usan el botón de **Consulta** de cada **Obra** y el pie de todas
+las páginas. **Pendiente:** el email es un placeholder (`contacto@example.com`,
+marcado con un TODO) hasta tener el real; hay que reemplazarlo antes de publicar.
+
 ## Cargar una Obra
 
 Cada **Obra** es una carpeta dentro de `contenido/obras/` con un `index.md` y sus
@@ -75,6 +80,7 @@ año: 2024
 enmarcada: true           # opcional
 estado: disponible        # disponible | reservada | vendida
 destacada: false          # opcional, por defecto false
+serie: marinas            # opcional: el slug de una Serie
 ---
 
 La descripción de la Obra va acá, en Markdown.
@@ -84,6 +90,48 @@ Si falta un campo obligatorio, una foto no tiene `alt`, la **Técnica** o el
 **Estado** no existen o dos **Obras** tienen el mismo slug, el build falla y el
 mensaje dice qué corregir. El precio no se carga: el sitio siempre dice
 "Consultar precio".
+
+## Cargar una Serie
+
+Cada **Serie** es un archivo `contenido/series/<slug>.md` (o una carpeta con un
+`index.md`), con el mismo criterio de slugs que las **Obras**. Su página es
+`/series/<slug>/` y muestra el nombre, el texto y sus **Obras** en el orden de la galería.
+
+```markdown
+---
+nombre: Marinas
+---
+
+El texto de la artista sobre la Serie, en Markdown.
+```
+
+Una **Obra** se suma a la **Serie** con `serie: <slug>`. Si la **Serie** no existe,
+el build falla.
+
+## Sobre mí
+
+La página `/sobre-mi/` se arma con tres archivos de `contenido/sobre-mi/`:
+
+- `biografia.md`: la biografía, en Markdown.
+- `statement.md`: el **Statement**, en Markdown.
+- `trayectoria.md`: la **Trayectoria**, en el frontmatter, separada en formación,
+  exposiciones y premios (cada lista es opcional):
+
+```md
+---
+formacion:
+  - año: 2008–2012
+    texto: Profesorado de Artes Visuales, Escuela de Bellas Artes
+exposiciones:
+  - año: 2019
+    texto: Muestra individual "Orillas", Galería del Puerto
+premios:
+  - año: 2021
+    texto: Primer premio, Salón de Pintura de Rosario
+---
+```
+
+Dentro de esos textos no se usan títulos de nivel 1 (`#`): la página ya tiene el suyo.
 
 ## Publicar
 

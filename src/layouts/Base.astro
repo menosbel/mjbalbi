@@ -1,7 +1,8 @@
 ---
 import { siteConfig } from '../../site.config.mjs';
 import Analitica from '../components/Analitica.astro';
-import Seo,{ type ImagenSeo } from '../components/Seo.astro';
+import Seo, { type ImagenSeo } from '../components/Seo.astro';
+import { mailto } from '../lib/consulta';
 import { url } from '../lib/urls';
 import '../styles/global.css';
 
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const { title, description = siteConfig.descripcion, image, type, jsonLd } = Astro.props;
+const instagram = `https://www.instagram.com/${siteConfig.instagram}/`;
 const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artista;
 ---
 
@@ -40,6 +42,10 @@ const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artis
     <main class="contenedor">
       <slot />
     </main>
+    <footer class="contenedor pie">
+      <a href={mailto()}>{siteConfig.email}</a>
+      <a href={instagram} rel="me">Instagram @{siteConfig.instagram}</a>
+    </footer>
   </body>
 </html>
 
@@ -53,5 +59,14 @@ const fullTitle = title ? `${title} · ${siteConfig.artista}` : siteConfig.artis
     font-size: 1.25rem;
     color: var(--color-texto);
     text-decoration: none;
+  }
+
+  .pie {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding-block: 2rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-secundario) 30%, transparent);
+    font-size: 0.9375rem;
   }
 </style>

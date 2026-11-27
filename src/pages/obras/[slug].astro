@@ -1,9 +1,11 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import FotosObra from '../../components/FotosObra.astro';
 import Base from '../../layouts/Base.astro';
+import { consultaObra } from '../../lib/consulta';
 import { ETIQUETA_ESTADO, ETIQUETA_TECNICA, formatMedidas } from '../../lib/obras';
 import { seoObra } from '../../lib/seo';
+import { urlSerie } from '../../lib/urls';
 
 export async function getStaticPaths() {
   const obras = await getCollection('obras');
@@ -13,6 +15,12 @@ export async function getStaticPaths() {
 const { obra } = Astro.props;
 const { titulo, fotos, medidas, tecnica, soporte, año, enmarcada, estado } = obra.data;
 const { Content } = await render(obra);
+const serie = obra.data.serie && (await getEntry(obra.data.serie));
+// Astro only logs a dangling reference; make it fail the build.
+if (obra.data.serie && !serie) {
+  throw new Error(`obras: "${obra.id}" pertenece a la Serie "${obra.data.serie.id}", que no existe.`);
+}
+const consulta = consultaObra(titulo, estado);
 
 const datos: [string, string][] = [
   ['Medidas', formatMedidas(medidas)],
@@ -32,6 +40,11 @@ function capitalize(text: string) {
     <FotosObra fotos={fotos} />
     <div class="ficha">
       <h1>{titulo}</h1>
+      {serie && (
+        <p class="serie">
+          Serie <a href={urlSerie(serie.id)}>{serie.data.nombre}</a>
+        </p>
+      )}
       <p class={`estado estado-${estado}`}>{ETIQUETA_ESTADO[estado]}</p>
       <dl>
         {
@@ -47,6 +60,7 @@ function capitalize(text: string) {
         <Content />
       </div>
       <p class="precio">Consultar precio</p>
+      <a class="consulta" href={consulta.href}>{consulta.texto}</a>
     </div>
   </article>
 </Base>
@@ -66,6 +80,11 @@ function capitalize(text: string) {
 
   .ficha > * {
     margin: 0;
+  }
+
+  .serie,
+  .serie a {
+    color: var(--color-secundario);
   }
 
   .estado {
@@ -101,6 +120,19 @@ function capitalize(text: string) {
   .precio {
     font-family: var(--fuente-titulos);
     font-size: 1.125rem;
+  }
+
+  .consulta {
+    justify-self: start;
+    padding: 0.75rem 1.25rem;
+    border-radius: 2px;
+    background: var(--color-acento);
+    color: var(--color-fondo);
+    text-decoration: none;
+  }
+
+  .consulta:hover {
+    filter: brightness(0.92);
   }
 
   @media (min-width: 64rem) {

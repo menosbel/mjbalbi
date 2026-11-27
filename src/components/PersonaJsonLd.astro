@@ -1,0 +1,15 @@
+---
+// Datos estructurados schema.org Person de la artista (nombre, sitio e Instagram).
+import { siteConfig } from '../../site.config.mjs';
+import { url } from '../lib/urls';
+
+const persona = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: siteConfig.artista,
+  url: `${siteConfig.url}${url('/')}`,
+  sameAs: [`https://www.instagram.com/${siteConfig.instagram}/`],
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(persona).replace(/</g, '\\u003c')} />
