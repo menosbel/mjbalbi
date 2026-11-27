@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import FotosObra from '../../components/FotosObra.astro';
 import Base from '../../layouts/Base.astro';
+import { consultaObra } from '../../lib/consulta';
 import { ETIQUETA_ESTADO, ETIQUETA_TECNICA, formatMedidas } from '../../lib/obras';
 
 export async function getStaticPaths() {
@@ -12,6 +13,7 @@ export async function getStaticPaths() {
 const { obra } = Astro.props;
 const { titulo, fotos, medidas, tecnica, soporte, año, enmarcada, estado } = obra.data;
 const { Content } = await render(obra);
+const consulta = consultaObra(titulo, estado);
 
 const datos: [string, string][] = [
   ['Medidas', formatMedidas(medidas)],
@@ -46,6 +48,7 @@ function capitalize(text: string) {
         <Content />
       </div>
       <p class="precio">Consultar precio</p>
+      <a class="consulta" href={consulta.href}>{consulta.texto}</a>
     </div>
   </article>
 </Base>
@@ -100,6 +103,19 @@ function capitalize(text: string) {
   .precio {
     font-family: var(--fuente-titulos);
     font-size: 1.125rem;
+  }
+
+  .consulta {
+    justify-self: start;
+    padding: 0.75rem 1.25rem;
+    border-radius: 2px;
+    background: var(--color-acento);
+    color: var(--color-fondo);
+    text-decoration: none;
+  }
+
+  .consulta:hover {
+    filter: brightness(0.92);
   }
 
   @media (min-width: 64rem) {
