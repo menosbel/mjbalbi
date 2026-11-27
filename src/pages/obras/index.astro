@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Galeria from '../../components/Galeria.astro';
 import Base from '../../layouts/Base.astro';
+import { siteConfig } from '../../../site.config.mjs';
 import { filtrosGaleria } from '../../lib/filtros';
 import { ordenGaleria } from '../../lib/orden';
 
@@ -9,7 +10,11 @@ const obras = ordenGaleria(await getCollection('obras'));
 const filtros = await filtrosGaleria(obras);
 ---
 
-<Base title="Obras" description="Todas las obras de María Julia Balbi: óleos, acrílicos y pasteles, disponibles y vendidas.">
+<Base
+  title="Obras"
+  description={`Galería de obras de ${siteConfig.artista}, con su técnica, medidas y disponibilidad.`}
+  image={obras[0]?.data.fotos[0]}
+>
   <h1>Obras</h1>
   <Galeria obras={obras} filtros={filtros} />
 </Base>

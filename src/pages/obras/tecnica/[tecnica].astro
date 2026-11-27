@@ -6,6 +6,7 @@ import Base from '../../../layouts/Base.astro';
 import { filtrosGaleria, slugTecnica } from '../../../lib/filtros';
 import { TECNICAS } from '../../../lib/obras';
 import { ordenGaleria } from '../../../lib/orden';
+import { siteConfig } from '../../../../site.config.mjs';
 
 export async function getStaticPaths() {
   const obras = await getCollection('obras');
@@ -22,7 +23,7 @@ const obras = todas.filter((o) => o.data.tecnica === tecnica);
 const titulo = `Obras en ${tecnica}`;
 ---
 
-<Base title={titulo} description={`Obras de María Julia Balbi pintadas en ${tecnica}.`}>
+<Base title={titulo} description={`Obras de ${siteConfig.artista} pintadas en ${tecnica}.`} image={obras[0]?.data.fotos[0]}>
   <h1>{titulo}</h1>
   <Galeria obras={obras} filtros={filtros} />
 </Base>

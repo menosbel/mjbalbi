@@ -6,6 +6,7 @@ import Galeria from '../../../components/Galeria.astro';
 import Base from '../../../layouts/Base.astro';
 import { filtrosGaleria } from '../../../lib/filtros';
 import { ordenGaleria } from '../../../lib/orden';
+import { siteConfig } from '../../../../site.config.mjs';
 import { urlSerie } from '../../../lib/urls';
 
 export async function getStaticPaths() {
@@ -22,7 +23,7 @@ const obras = todas.filter((o) => o.data.serie?.id === serie.id);
 const titulo = `Obras de la Serie ${serie.data.nombre}`;
 ---
 
-<Base title={titulo} description={`Las obras de María Julia Balbi en la Serie ${serie.data.nombre}.`}>
+<Base title={titulo} description={`Las obras de ${siteConfig.artista} en la Serie ${serie.data.nombre}.`} image={obras[0]?.data.fotos[0]}>
   <h1>{titulo}</h1>
   <p class="sobre-serie"><a href={urlSerie(serie.id)}>Sobre la Serie {serie.data.nombre}</a></p>
   <Galeria obras={obras} filtros={filtros} />

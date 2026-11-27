@@ -30,7 +30,13 @@ probar un caso nuevo, se agrega un fixture y se usa `buildSite('<nombre>')` de
 Todo lo que depende de dónde se publica está en `site.config.mjs`: URL del sitio,
 `base` path (`/mjbalbi` en GitHub Pages, vacío con dominio propio) y directorio de
 contenido. Algunos valores se pueden pisar con variables de entorno (`SITE_URL`,
-`SITE_BASE`, `CONTENT_DIR`).
+`SITE_BASE`, `CONTENT_DIR`, `SITE_INDEXAR`, `GOATCOUNTER`).
+
+- `indexar`: `false` por defecto, así los buscadores no indexan el sitio (todas las
+  páginas llevan `noindex` y `robots.txt` prohíbe rastrear). Se pone en `true` al
+  publicar con el dominio definitivo.
+- `goatcounter`: el código de la cuenta de GoatCounter (analítica sin cookies). Vacío,
+  no se incluye el script.
 
 También están ahí el email de la artista (`email`) y su usuario de Instagram
 (`instagram`), que usan el botón de **Consulta** de cada **Obra** y el pie de todas
