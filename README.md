@@ -1,17 +1,88 @@
 # mjbalbi
 
-Sitio web estático. El contenido vive en `public/`. No tiene dependencias.
+Sitio de la artista María Julia Balbi, generado con [Astro](https://astro.build) y
+publicado en GitHub Pages. El contenido vive en el repo (ver
+`docs/adr/0001-contenido-en-git-con-astro.md`) y el vocabulario en `GLOSSARY.md`.
 
-## Desarrollo local
+## Correr el sitio
 
 ```sh
-nvm use      # Node 26 LTS (ver .nvmrc)
-npm start    # http://localhost:3000
+nvm use          # Node según .nvmrc
+npm install
+npm run dev      # http://localhost:4321/mjbalbi/
+npm run build    # genera dist/
+npm run preview  # sirve dist/
 ```
 
-`server.js` sirve los archivos de `public/` usando solo módulos nativos de Node.
+## Tests
 
-## Deploy
+```sh
+npm test
+```
 
-Cada push a `main` publica `public/` en GitHub Pages mediante
-`.github/workflows/pages.yml`: https://menosbel.github.io/mjbalbi/
+Los tests usan `node:test`. Cada uno corre `astro build` sobre un directorio de
+contenido de prueba (`test/fixtures/<nombre>/`) y revisa el HTML generado. Para
+probar un caso nuevo, se agrega un fixture y se usa `buildSite('<nombre>')` de
+`test/harness.mjs`.
+
+## Configuración
+
+Todo lo que depende de dónde se publica está en `site.config.mjs`: URL del sitio,
+`base` path (`/mjbalbi` en GitHub Pages, vacío con dominio propio) y directorio de
+contenido. Algunos valores se pueden pisar con variables de entorno (`SITE_URL`,
+`SITE_BASE`, `CONTENT_DIR`).
+
+## Cargar una Obra
+
+Cada **Obra** es una carpeta dentro de `contenido/obras/` con un `index.md` y sus
+fotos al lado (JPEG de hasta unos 2400 px del lado largo):
+
+```
+contenido/obras/atardecer-en-el-rio/
+├── index.md
+├── frente.jpg
+└── detalle.jpg
+```
+
+El nombre de la carpeta es el slug, es decir, la URL de la **Obra**
+(`/obras/atardecer-en-el-rio/`). Se arma con el título en minúsculas, sin tildes y con
+guiones. Si el título se repite, se agrega `-02`, `-03`… Las "Sin título" se numeran
+siempre: `sin-titulo-01`, `sin-titulo-02`… Una vez publicado, el slug no se cambia.
+También se puede usar un solo archivo (`contenido/obras/<slug>.md`) con las fotos en
+la misma carpeta.
+
+```md
+---
+titulo: Atardecer en el río
+fotos:                    # al menos una; la primera es la principal
+  - src: ./frente.jpg
+    alt: Un río ancho bajo un cielo naranja   # obligatorio
+  - src: ./detalle.jpg
+    alt: Detalle de las pinceladas del agua
+medidas:                  # en cm
+  alto: 60
+  ancho: 80
+  profundidad: 3          # opcional
+tecnica: óleo             # óleo | acrílico | pastel
+soporte: lienzo           # opcional
+año: 2024
+enmarcada: true           # opcional
+estado: disponible        # disponible | reservada | vendida
+destacada: false          # opcional, por defecto false
+---
+
+La descripción de la Obra va acá, en Markdown.
+```
+
+Si falta un campo obligatorio, una foto no tiene `alt`, la **Técnica** o el
+**Estado** no existen o dos **Obras** tienen el mismo slug, el build falla y el
+mensaje dice qué corregir. El precio no se carga: el sitio siempre dice
+"Consultar precio".
+
+## Publicar
+
+Cada push a `main` corre `.github/workflows/pages.yml`: instala dependencias, corre
+los tests, hace el build de Astro y publica `dist/` en GitHub Pages:
+https://menosbel.github.io/mjbalbi/
+
+Para pasar a un dominio propio, se cambian `url` y `base` en `site.config.mjs`.
