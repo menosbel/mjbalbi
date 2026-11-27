@@ -4,22 +4,21 @@
 import { getCollection } from 'astro:content';
 import Galeria from '../../../components/Galeria.astro';
 import Base from '../../../layouts/Base.astro';
-import { filtrosGaleria } from '../../../lib/filtros';
+import { filtrosGaleria, seriesConObras } from '../../../lib/filtros';
+import { obrasDeSerie } from '../../../lib/obras';
 import { ordenGaleria } from '../../../lib/orden';
 import { siteConfig } from '../../../../site.config.mjs';
 import { urlSerie } from '../../../lib/urls';
 
 export async function getStaticPaths() {
-  const obras = await getCollection('obras');
-  return (await getCollection('series'))
-    .filter((s) => obras.some((o) => o.data.serie?.id === s.id))
-    .map((serie) => ({ params: { serie: serie.id }, props: { serie } }));
+  const series = await seriesConObras(await getCollection('obras'));
+  return series.map((serie) => ({ params: { serie: serie.id }, props: { serie } }));
 }
 
 const { serie } = Astro.props;
 const todas = ordenGaleria(await getCollection('obras'));
 const filtros = await filtrosGaleria(todas);
-const obras = todas.filter((o) => o.data.serie?.id === serie.id);
+const obras = obrasDeSerie(todas, serie.id);
 const titulo = `Obras de la Serie ${serie.data.nombre}`;
 ---
 

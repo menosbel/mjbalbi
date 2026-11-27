@@ -4,13 +4,12 @@ import { getCollection } from 'astro:content';
 import Galeria from '../../../components/Galeria.astro';
 import Base from '../../../layouts/Base.astro';
 import { filtrosGaleria, slugTecnica } from '../../../lib/filtros';
-import { TECNICAS } from '../../../lib/obras';
+import { tecnicasConObras } from '../../../lib/obras';
 import { ordenGaleria } from '../../../lib/orden';
 import { siteConfig } from '../../../../site.config.mjs';
 
 export async function getStaticPaths() {
-  const obras = await getCollection('obras');
-  return TECNICAS.filter((t) => obras.some((o) => o.data.tecnica === t)).map((tecnica) => ({
+  return tecnicasConObras(await getCollection('obras')).map((tecnica) => ({
     params: { tecnica: slugTecnica(tecnica) },
     props: { tecnica },
   }));

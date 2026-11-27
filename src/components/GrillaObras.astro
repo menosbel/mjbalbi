@@ -1,0 +1,47 @@
+---
+// La grilla de Obras de la galería, el inicio y las páginas de Serie: 1 columna
+// en el celular, 2 desde 36rem, 3 desde 64rem. `obras` ya viene en el orden de
+// la galería. Solo la foto de la primera tarjeta se carga enseguida: en esas
+// páginas la grilla es lo único con imágenes.
+import type { CollectionEntry } from 'astro:content';
+import TarjetaObra from './TarjetaObra.astro';
+
+interface Props {
+  obras: CollectionEntry<'obras'>[];
+}
+
+const { obras } = Astro.props;
+---
+
+<ul class="galeria">
+  {
+    obras.map((obra, i) => (
+      <li>
+        <TarjetaObra obra={obra} eager={i === 0} />
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .galeria {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 36rem) {
+    .galeria {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .galeria {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

@@ -1,8 +1,9 @@
 ---
 import { getCollection, render } from 'astro:content';
-import TarjetaObra from '../../components/TarjetaObra.astro';
+import GrillaObras from '../../components/GrillaObras.astro';
 import Base from '../../layouts/Base.astro';
 import { siteConfig } from '../../../site.config.mjs';
+import { obrasDeSerie } from '../../lib/obras';
 import { ordenGaleria } from '../../lib/orden';
 import { textoPlano } from '../../lib/seo';
 
@@ -13,7 +14,7 @@ export async function getStaticPaths() {
 
 const { serie } = Astro.props;
 const { Content } = await render(serie);
-const obras = ordenGaleria(await getCollection('obras', (obra) => obra.data.serie?.id === serie.id));
+const obras = obrasDeSerie(ordenGaleria(await getCollection('obras')), serie.id);
 ---
 
 <Base
@@ -26,15 +27,9 @@ const obras = ordenGaleria(await getCollection('obras', (obra) => obra.data.seri
     <div class="texto">
       <Content />
     </div>
-    <ul class="obras">
-      {
-        obras.map((obra, i) => (
-          <li>
-            <TarjetaObra obra={obra} eager={i === 0} />
-          </li>
-        ))
-      }
-    </ul>
+    <div class="obras">
+      <GrillaObras obras={obras} />
+    </div>
   </article>
 </Base>
 
@@ -47,25 +42,7 @@ const obras = ordenGaleria(await getCollection('obras', (obra) => obra.data.seri
     max-width: 40rem;
   }
 
-  /* Misma grilla que la galería: 1 columna en el celular, 2 desde 36rem, 3 desde 64rem. */
   .obras {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem 1.5rem;
-    margin: 2rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  @media (min-width: 36rem) {
-    .obras {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 64rem) {
-    .obras {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    margin-top: 2rem;
   }
 </style>

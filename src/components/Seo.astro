@@ -2,14 +2,9 @@
 // Metadatos de buscadores y redes de cada página: title, description,
 // canonical, Open Graph, Twitter Card y JSON-LD. Lo usa el layout Base; las
 // páginas le pasan sus datos como props de <Base> (ver Base.astro).
-import type { ImageMetadata } from 'astro';
 import { siteConfig } from '../../site.config.mjs';
+import type { Foto } from '../lib/obras';
 import { absoluta, imagenParaCompartir, serializarJsonLd } from '../lib/seo';
-
-export interface ImagenSeo {
-  src: ImageMetadata;
-  alt: string;
-}
 
 interface Props {
   title: string;
@@ -17,7 +12,7 @@ interface Props {
   /** og:type: 'website' por defecto; 'article' para una página de contenido. */
   type?: string;
   /** Imagen para compartir (Open Graph / Twitter). */
-  image?: ImagenSeo;
+  image?: Foto;
   /** Datos estructurados schema.org: un objeto o una lista. */
   jsonLd?: object | object[];
 }

@@ -1,8 +1,8 @@
 ---
-// La galería de Obras con sus filtros por Técnica y Serie. La usan /obras/ (todas)
+// La galería de Obras (GrillaObras) con sus filtros por Técnica y Serie. La usan /obras/ (todas)
 // y las vistas filtradas; `obras` ya viene filtrada y en el orden de la galería.
 import type { CollectionEntry } from 'astro:content';
-import TarjetaObra from './TarjetaObra.astro';
+import GrillaObras from './GrillaObras.astro';
 import type { Filtro } from '../lib/filtros';
 
 interface Props {
@@ -27,15 +27,9 @@ const actual = Astro.url.pathname;
     }
   </ul>
 </nav>
-<ul class="galeria">
-  {
-    obras.map((obra, i) => (
-      <li>
-        <TarjetaObra obra={obra} eager={i === 0} />
-      </li>
-    ))
-  }
-</ul>
+<div class="obras">
+  <GrillaObras obras={obras} />
+</div>
 
 <style>
   .filtros ul {
@@ -72,24 +66,7 @@ const actual = Astro.url.pathname;
     color: var(--color-fondo);
   }
 
-  .galeria {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem 1.5rem;
-    margin: 0;
-    padding: 0 0 3rem;
-    list-style: none;
-  }
-
-  @media (min-width: 36rem) {
-    .galeria {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 64rem) {
-    .galeria {
-      grid-template-columns: repeat(3, 1fr);
-    }
+  .obras {
+    padding-bottom: 3rem;
   }
 </style>

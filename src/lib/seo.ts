@@ -3,7 +3,7 @@
 import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 import { siteConfig } from '../../site.config.mjs';
-import { ETIQUETA_TECNICA, formatMedidas, type Tecnica } from './obras';
+import { ETIQUETA_TECNICA, formatMedidas, formatSoporte, type DatosObra, type Foto } from './obras';
 import { urlObra } from './urls';
 
 /** URL absoluta de una ruta que ya incluye el base path (url(), Astro.url.pathname, getImage().src). */
@@ -31,16 +31,11 @@ export function textoPlano(markdown = '') {
     .trim();
 }
 
-interface DatosObra {
-  titulo: string;
-  tecnica: Tecnica;
-  soporte?: string;
-  medidas: { alto: number; ancho: number; profundidad?: number };
-  año: number;
-}
+/** Los datos de una Obra que van en su description y su JSON-LD. */
+type FichaObra = Pick<DatosObra, 'titulo' | 'tecnica' | 'soporte' | 'medidas' | 'año'>;
 
 /** "Atardecer en el río, de María Julia Balbi. Óleo sobre lienzo, 60 × 80 × 3 cm, 2024. <descripción>" */
-export function descripcionObra({ titulo, tecnica, soporte, medidas, año }: DatosObra, cuerpo?: string) {
+export function descripcionObra({ titulo, tecnica, soporte, medidas, año }: FichaObra, cuerpo?: string) {
   const tecnicaYSoporte = ETIQUETA_TECNICA[tecnica] + (soporte ? ` sobre ${soporte}` : '');
   const ficha = `${titulo}, de ${siteConfig.artista}. ${tecnicaYSoporte}, ${formatMedidas(medidas)}, ${año}.`;
   const texto = textoPlano(cuerpo);
@@ -51,7 +46,7 @@ export function descripcionObra({ titulo, tecnica, soporte, medidas, año }: Dat
  * Props de SEO para el <Base> de la página de una Obra:
  * <Base title={titulo} {...await seoObra(obra.id, obra.data, obra.body)}>
  */
-export async function seoObra(slug: string, data: DatosObra & { fotos: { src: ImageMetadata; alt: string }[] }, cuerpo?: string) {
+export async function seoObra(slug: string, data: FichaObra & { fotos: Foto[] }, cuerpo?: string) {
   const principal = data.fotos[0];
   const imagen = await imagenParaCompartir(principal.src);
   return {
@@ -63,11 +58,10 @@ export async function seoObra(slug: string, data: DatosObra & { fotos: { src: Im
 }
 
 const cm = (value: number) => ({ '@type': 'QuantitativeValue', value, unitCode: 'CMT', unitText: 'cm' });
-const capitalizar = (texto: string) => texto.charAt(0).toLocaleUpperCase('es') + texto.slice(1);
 
 /** JSON-LD schema.org VisualArtwork de una Obra. Omite los campos que la Obra no tiene. */
 export function jsonLdObra(
-  { titulo, tecnica, soporte, medidas, año }: DatosObra,
+  { titulo, tecnica, soporte, medidas, año }: FichaObra,
   { url, imagen, cuerpo }: { url: string; imagen: string; cuerpo?: string },
 ) {
   const descripcion = textoPlano(cuerpo);
@@ -80,7 +74,7 @@ export function jsonLdObra(
     creator: { '@type': 'Person', name: siteConfig.artista },
     artform: 'Pintura',
     artMedium: ETIQUETA_TECNICA[tecnica],
-    ...(soporte && { artworkSurface: capitalizar(soporte) }),
+    ...(soporte && { artworkSurface: formatSoporte(soporte) }),
     height: cm(medidas.alto),
     width: cm(medidas.ancho),
     ...(medidas.profundidad !== undefined && { depth: cm(medidas.profundidad) }),

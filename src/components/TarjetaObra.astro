@@ -5,6 +5,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { Picture } from 'astro:assets';
 import EtiquetaEstado from './EtiquetaEstado.astro';
+import { anchosResponsivos } from '../lib/imagenes';
 import { urlObra } from '../lib/urls';
 
 interface Props {
@@ -17,10 +18,10 @@ const { obra, eager = false } = Astro.props;
 const { titulo, fotos, estado } = obra.data;
 const [foto] = fotos;
 // Columnas de la grilla: 1 en el celular, 2 desde 36rem, 3 desde 64rem.
-const sizes = '(min-width: 64rem) 33vw, (min-width: 36rem) 50vw, 100vw';
-const MAX = 1200;
-// Nunca se agranda una foto: los tamaños llegan hasta el ancho del original.
-const widths = [...[360, 480, 800].filter((w) => w < foto.src.width), Math.min(foto.src.width, MAX)];
+const SIZES = '(min-width: 64rem) 33vw, (min-width: 36rem) 50vw, 100vw';
+const ANCHOS = [360, 480, 800];
+// Una tarjeta nunca ocupa más de un tercio de una pantalla ancha.
+const ANCHO_MAXIMO = 1200;
 ---
 
 <a class="tarjeta" href={urlObra(obra.id)}>
@@ -28,8 +29,8 @@ const widths = [...[360, 480, 800].filter((w) => w < foto.src.width), Math.min(f
     <Picture
       src={foto.src}
       alt={foto.alt}
-      widths={widths}
-      sizes={sizes}
+      widths={anchosResponsivos(foto, ANCHOS, ANCHO_MAXIMO)}
+      sizes={SIZES}
       formats={['webp']}
       loading={eager ? 'eager' : 'lazy'}
       fetchpriority={eager ? 'high' : undefined}
