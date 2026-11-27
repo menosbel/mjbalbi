@@ -1,6 +1,7 @@
 ---
-// Una Obra en una grilla (galería, Serie, inicio): foto principal, título y Estado,
-// todo dentro de un link a su página. Va dentro de un <li>.
+// Una Obra en una grilla (galería, Serie, inicio): un figure con la foto principal
+// y, como figcaption, el título y el Estado; todo dentro de un link a su página.
+// Va dentro de un <li>.
 import type { CollectionEntry } from 'astro:content';
 import { Picture } from 'astro:assets';
 import EtiquetaEstado from './EtiquetaEstado.astro';
@@ -8,7 +9,7 @@ import { urlObra } from '../lib/urls';
 
 interface Props {
   obra: CollectionEntry<'obras'>;
-  /** true para las primeras de la grilla, que se ven sin hacer scroll. */
+  /** true solo para la primera imagen de la página: se carga enseguida y con prioridad. */
   eager?: boolean;
 }
 
@@ -23,24 +24,34 @@ const widths = [...[360, 480, 800].filter((w) => w < foto.src.width), Math.min(f
 ---
 
 <a class="tarjeta" href={urlObra(obra.id)}>
-  <Picture
-    src={foto.src}
-    alt={foto.alt}
-    widths={widths}
-    sizes={sizes}
-    formats={['webp']}
-    loading={eager ? 'eager' : 'lazy'}
-  />
-  <h2>{titulo}</h2>
-  <EtiquetaEstado estado={estado} />
+  <figure>
+    <Picture
+      src={foto.src}
+      alt={foto.alt}
+      widths={widths}
+      sizes={sizes}
+      formats={['webp']}
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : undefined}
+    />
+    <figcaption>
+      <h2>{titulo}</h2>
+      <EtiquetaEstado estado={estado} />
+    </figcaption>
+  </figure>
 </a>
 
 <style>
   .tarjeta {
-    display: grid;
-    gap: 0.5rem;
     color: inherit;
     text-decoration: none;
+  }
+
+  figure,
+  figcaption {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
   }
 
   .tarjeta :global(img) {

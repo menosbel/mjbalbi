@@ -1,9 +1,10 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content';
+import EtiquetaEstado from '../../components/EtiquetaEstado.astro';
 import FotosObra from '../../components/FotosObra.astro';
 import Base from '../../layouts/Base.astro';
 import { consultaObra } from '../../lib/consulta';
-import { ETIQUETA_ESTADO, ETIQUETA_TECNICA, formatMedidas } from '../../lib/obras';
+import { ETIQUETA_TECNICA, formatMedidas } from '../../lib/obras';
 import { seoObra } from '../../lib/seo';
 import { urlSerie } from '../../lib/urls';
 
@@ -37,7 +38,7 @@ function capitalize(text: string) {
 
 <Base title={titulo} {...await seoObra(obra.id, obra.data, obra.body)}>
   <article class="obra">
-    <FotosObra fotos={fotos} />
+    <FotosObra titulo={titulo} fotos={fotos} />
     <div class="ficha">
       <h1>{titulo}</h1>
       {serie && (
@@ -45,7 +46,7 @@ function capitalize(text: string) {
           Serie <a href={urlSerie(serie.id)}>{serie.data.nombre}</a>
         </p>
       )}
-      <p class={`estado estado-${estado}`}>{ETIQUETA_ESTADO[estado]}</p>
+      <EtiquetaEstado estado={estado} />
       <dl>
         {
           datos.map(([termino, valor]) => (
@@ -85,22 +86,6 @@ function capitalize(text: string) {
   .serie,
   .serie a {
     color: var(--color-secundario);
-  }
-
-  .estado {
-    font-size: 0.875rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .estado-disponible {
-    color: var(--color-acento);
-  }
-
-  .estado-reservada,
-  .estado-vendida {
-    color: var(--color-secundario);
-    opacity: 0.8;
   }
 
   dl {

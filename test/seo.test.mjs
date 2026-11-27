@@ -35,6 +35,13 @@ describe('SEO de todas las páginas', () => {
     assert.equal(canonicals.size, n, 'hay canonicals repetidos');
   });
 
+  test('las descriptions usan el vocabulario del glosario (Obra, Estado), no "pintura" ni "disponibilidad"', () => {
+    for (const path of site.pages()) {
+      const description = meta(site.page(path), 'meta[name="description"]');
+      assert.doesNotMatch(description, /disponibilidad|\bpinturas?\b/i, `${path}: ${description}`);
+    }
+  });
+
   test('cada página tiene Open Graph y Twitter Card', () => {
     for (const path of site.pages()) {
       const page = site.page(path);

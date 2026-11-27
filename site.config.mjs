@@ -33,7 +33,7 @@ export const siteConfig = {
    */
   goatcounter: env.GOATCOUNTER ?? '',
   /** Descripción del sitio: meta description de las páginas que no tienen una propia. */
-  descripcion: 'Pinturas originales de María Julia Balbi: óleos, acrílicos y pasteles.',
+  descripcion: 'Obras originales de María Julia Balbi: óleos, acrílicos y pasteles.',
   /** Email de la artista: destino de las Consultas y del pie. */
   // TODO: reemplazar por el email real de la artista (todavía no lo tenemos).
   email: 'contacto@example.com',

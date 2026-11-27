@@ -48,19 +48,13 @@ describe('galería /obras/', () => {
     }
   });
 
-  test('la etiqueta Disponible usa el acento; Reservada y Vendida, el secundario más tenue', () => {
-    const reglas = reglasCss(site, page);
-    const declaraciones = (estado) =>
-      reglas
-        .filter((r) => r.media === null && r.selector.split(',').some((s) => s.includes(`.estado-${estado}`)))
-        .map((r) => r.cuerpo)
-        .join(';');
-    assert.match(declaraciones('disponible'), /color:\s*var\(--color-acento\)/);
-    assert.doesNotMatch(declaraciones('disponible'), /opacity/);
-    for (const estado of ['reservada', 'vendida']) {
-      assert.match(declaraciones(estado), /color:\s*var\(--color-secundario\)/);
-      assert.match(declaraciones(estado), /opacity:\s*0?\.\d/);
-    }
+  test('cada Obra es un figure con la foto y un figcaption con su título', () => {
+    const titulos = items(page).map((li) => {
+      const figura = li.querySelector('figure');
+      assert.ok(figura?.querySelector('img'), 'la tarjeta no tiene un figure con la foto');
+      return figura.querySelector('figcaption')?.querySelector('h2')?.text.trim();
+    });
+    assert.deepEqual(titulos, ['Atardecer en el río', 'Sin título']);
   });
 
   test('en el celular la grilla es de una columna y crece en pantallas más anchas', () => {

@@ -18,14 +18,14 @@ const { estado } = Astro.props;
     text-transform: uppercase;
   }
 
-  /* Disponible en el acento; Reservada y Vendida en el secundario, más tenues. */
+  /* Disponible en el acento; Reservada y Vendida en el tenue (un secundario más
+     apagado que igual cumple WCAG AA). */
   .estado-disponible {
     color: var(--color-acento);
   }
 
   .estado-reservada,
   .estado-vendida {
-    color: var(--color-secundario);
-    opacity: 0.8;
+    color: var(--color-tenue);
   }
 </style>

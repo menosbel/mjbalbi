@@ -31,7 +31,7 @@ const actual = Astro.url.pathname;
   {
     obras.map((obra, i) => (
       <li>
-        <TarjetaObra obra={obra} eager={i < 2} />
+        <TarjetaObra obra={obra} eager={i === 0} />
       </li>
     ))
   }

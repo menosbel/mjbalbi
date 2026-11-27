@@ -64,6 +64,15 @@ describe('página de una Obra', () => {
       ]);
     });
 
+    test('cada foto es un figure con un figcaption que nombra la Obra', () => {
+      const figuras = page.querySelectorAll('main figure');
+      assert.equal(figuras.length, 2);
+      for (const figura of figuras) {
+        assert.ok(figura.querySelector('img'), 'figure sin img');
+        assert.match(figura.querySelector('figcaption')?.text ?? '', /Atardecer en el río/);
+      }
+    });
+
     test('sirve cada foto en varios tamaños', () => {
       const imgs = page.querySelectorAll('main figure img');
       assert.equal(imgs.length, 2);

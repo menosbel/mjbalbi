@@ -30,7 +30,7 @@ const destacadas = ordenGaleria(await getCollection('obras', (o) => o.data.desta
         <ul class="obras">
           {destacadas.map((obra, i) => (
             <li>
-              <TarjetaObra obra={obra} eager={i < 2} />
+              <TarjetaObra obra={obra} eager={i === 0} />
             </li>
           ))}
         </ul>

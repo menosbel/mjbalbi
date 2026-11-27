@@ -30,7 +30,8 @@ describe('layout base', () => {
   });
 
   test('usa la paleta acordada', () => {
-    for (const color of ['#faf8f4', '#1f1d1a', '#a4532f', '#6b7a5e']) {
+    // El oliva secundario de #4 (#6b7a5e) se oscureció a #5a6a4f para cumplir WCAG AA.
+    for (const color of ['#faf8f4', '#1f1d1a', '#a4532f', '#5a6a4f']) {
       assert.ok(css.includes(color), `falta el color ${color}`);
     }
   });

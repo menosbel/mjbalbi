@@ -28,9 +28,9 @@ const obras = ordenGaleria(await getCollection('obras', (obra) => obra.data.seri
     </div>
     <ul class="obras">
       {
-        obras.map((obra) => (
+        obras.map((obra, i) => (
           <li>
-            <TarjetaObra obra={obra} />
+            <TarjetaObra obra={obra} eager={i === 0} />
           </li>
         ))
       }
