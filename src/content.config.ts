@@ -1,4 +1,4 @@
-import { defineCollection } from 'astro:content';
+import { defineCollection, reference } from 'astro:content';
 import { z } from 'astro/zod';
 import { siteConfig } from '../site.config.mjs';
 import { ESTADOS, TECNICAS } from './lib/obras';
@@ -31,7 +31,16 @@ const obras = defineCollection({
       enmarcada: z.boolean().optional(),
       estado: z.enum(ESTADOS),
       destacada: z.boolean().default(false),
+      serie: reference('series').optional(),
     }),
 });
 
-export const collections = { obras };
+// Cada Serie es `series/<slug>.md` o `series/<slug>/index.md`; el cuerpo es el texto de la artista.
+const series = defineCollection({
+  loader: globPorSlug({ base: contentDir('series'), coleccion: 'series' }),
+  schema: z.object({
+    nombre: z.string().min(1),
+  }),
+});
+
+export const collections = { obras, series };

@@ -14,8 +14,11 @@ interface ObraOrdenable {
 
 const grupo = (estado: Estado) => (estado === 'vendida' ? 1 : 0);
 
-/** A sorted copy of the Obras, in gallery order. Works on any subset (a Serie, the Destacadas). */
-export function ordenarObras<T extends ObraOrdenable>(obras: readonly T[]): T[] {
+/**
+ * A sorted copy of the Obras, in gallery order. Works on any subset (a Serie,
+ * the Destacadas). Last resort tie-break: the slug, so the order is stable.
+ */
+export function ordenGaleria<T extends ObraOrdenable>(obras: readonly T[]): T[] {
   return [...obras].sort(
     (a, b) =>
       grupo(a.data.estado) - grupo(b.data.estado) ||

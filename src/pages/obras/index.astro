@@ -2,9 +2,9 @@
 import { getCollection } from 'astro:content';
 import TarjetaObra from '../../components/TarjetaObra.astro';
 import Base from '../../layouts/Base.astro';
-import { ordenarObras } from '../../lib/orden';
+import { ordenGaleria } from '../../lib/orden';
 
-const obras = ordenarObras(await getCollection('obras'));
+const obras = ordenGaleria(await getCollection('obras'));
 ---
 
 <Base title="Obras">
