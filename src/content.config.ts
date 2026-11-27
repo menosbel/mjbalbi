@@ -1,15 +1,14 @@
 import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { siteConfig } from '../site.config.mjs';
 import { ESTADOS, TECNICAS } from './lib/obras';
+import { globPorSlug } from './lib/slugs';
 
 const contentDir = (collection: string) => `${siteConfig.contentDir.replace(/\/+$/, '')}/${collection}`;
 
 // Cada Obra es `obras/<slug>.md` o `obras/<slug>/index.md`, con sus fotos al lado.
-// El slug sale del nombre del archivo o carpeta.
 const obras = defineCollection({
-  loader: glob({ pattern: ['*.md', '*/index.md'], base: contentDir('obras') }),
+  loader: globPorSlug({ base: contentDir('obras'), coleccion: 'obras' }),
   schema: ({ image }) =>
     z.object({
       titulo: z.string().min(1),
